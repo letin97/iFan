@@ -8,7 +8,7 @@ import ScrollViewImage from '../../components/ScrollViewImage';
 import Map from '../../components/Map';
 import SwiperImage from '../../components/SwiperImage';
 
-import img from '../../assets/icons/show1.jpg';
+import getShow from '../../api/getShow';
 import icStar from '../../assets/icons/star.png';
 import icAttend from '../../assets/icons/attend.png';
 import icShare from '../../assets/icons/share.png';
@@ -17,32 +17,55 @@ import icTime from '../../assets/icons/time.png';
 import icTicket from '../../assets/icons/ticket.png';
 
 const width = Dimensions.get('window').width;
+const url = 'http://192.168.1.4/ifan/banners/show/';
 
 export default class ShowDetail extends Component {
 
-    static navigationOptions = {
-        
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            show: {}
+        };
+    }
+
+    componentDidMount() {
+        const { navigation } = this.props;
+        const id = navigation.getParam('id', 'NO-ID');
+        getShow(id)
+        .then(responJSON => {
+            const { show } = responJSON;
+            this.setState({ show });
+        })
+        .catch(err => console.log(err));
+    }
+
+    parseDate(input) {
+        const parts = input.trim().replace(/ +(?= )/g,'').split(/[\s-\/:]/);
+        return parts;
+    }
 
     render() {
+        const { show } = this.state;
+        if (Object.keys(show).length === 0) return null;
+
         const { wapper, imageStyle, showCard, boderTime, showTime, showInfo, showFullDate, showPrice,
             showDate, showMonth, showName, showPlace, icStyle1, icStyle2, boderPrice, icInfo } = styles;
+        
         return (
-
             <ScrollView style={showCard}>
-                <Image source={img} style={imageStyle} />
+                <Image source={{ uri: `${url}${show.banners[0]}` }}style={imageStyle} />
                 <View style={wapper}>
                     <View style={showInfo}>
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ flex: 3 }}>
                                 <View style={boderTime}>
-                                    <Text style={showDate}>18</Text>
-                                    <Text style={showMonth}>09</Text>
+                                    <Text style={showDate}>{this.parseDate(show.time)[2]}</Text>
+                                    <Text style={showMonth}>{this.parseDate(show.time)[1]}</Text>
                                 </View>
                             </View>
                             <View style={{ flex: 7, justifyContent: 'center' }}>
-                                <Text style={showName}>Show diễn Heniken</Text>
-                                <Text style={showPlace}>Nhà hát Thành phố</Text>
+                                <Text style={showName}>{show.name}</Text>
+                                <Text style={showPlace}>{show.place}</Text>
                             </View>
 
                         </View>
@@ -72,8 +95,8 @@ export default class ShowDetail extends Component {
                                     <Image source={icTime} style={icStyle2} />
                                 </View>
                                 <View style={{ flex: 8 }}>
-                                    <Text style={showFullDate}>Thứ tư, 26 Thg 9 </Text>
-                                    <Text style={showTime}>6:00 - 9:00</Text>
+                                    <Text style={showFullDate}>{this.parseDate(show.time)[2]} Thg {this.parseDate(show.time)[1]} </Text>
+                                    <Text style={showTime}>{this.parseDate(show.time)[3]}:{this.parseDate(show.time)[4]}</Text>
                                 </View>
                             </View>
                             <View style={{ flexDirection: 'row', marginVertical: 2 }}>
@@ -81,8 +104,8 @@ export default class ShowDetail extends Component {
                                     <Image source={icLocal} style={icStyle2} />
                                 </View>
                                 <View style={{ flex: 8 }}>
-                                    <Text style={showFullDate}>Nhà hát thành phố</Text>
-                                    <Text style={showTime}>07 Công Trường Lam Sơn, Bến Nghé, Quận 1, Hồ Chí Minh</Text>
+                                    <Text style={showFullDate}>{show.place}</Text>
+                                    <Text style={showTime}>{show.address}</Text>
                                 </View>
                             </View>
                             <View style={{ flexDirection: 'row', marginVertical: 2 }}>
@@ -90,16 +113,15 @@ export default class ShowDetail extends Component {
                                     <Image source={icTicket} style={icStyle2} />
                                 </View>
                                 <View style={{ flex: 8 }}>
-                                    <Text style={showFullDate}>200.00 đ</Text>
-                                    <Text style={showTime}>tickbox.vn</Text>
+                                    <Text style={showFullDate}>{show.price}</Text>
+                                    <Text style={showTime}>{show.company}</Text>
                                 </View>
                             </View>
                         </View>
-
                     </View>
                 </View>
 
-                <ScrollViewImage navigation={this.props.navigation} />
+                <ScrollViewImage navigation={this.props.navigation} show={this.state.show} />
                 <Map />
                 <SwiperImage />
             </ScrollView>

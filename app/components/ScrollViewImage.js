@@ -15,6 +15,8 @@ export default class ScrollViewImage extends Component {
     }
 
     render() {
+        const { show } = this.props;
+        
         return (
             <View>
                 <Text style={styles.text}>Ca sĩ</Text>
@@ -22,33 +24,14 @@ export default class ScrollViewImage extends Component {
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                 >
-                    <TouchableOpacity onPress={this.goToSinger.bind(this)}>
+                {show.singers.map(s => (
+                    <TouchableOpacity onPress={this.goToSinger.bind(this)} key={s.id}>
                         <View style={{ alignItems: 'center', paddingHorizontal: 3 }}>
                             <Image source={mtp} style={styles.image} />
-                            <Text style={styles.name}>Sơn Tùng MTP</Text>
+                            <Text style={styles.name}>{s.name}</Text>
                         </View>
                     </TouchableOpacity>
-                    <View style={{ alignItems: 'center', paddingHorizontal: 3 }}>
-                        <Image source={soobin} style={styles.image} />
-                        <Text style={styles.name}>Soobin Hoàng Sơn</Text>
-                    </View>
-                    <View style={{ alignItems: 'center', paddingHorizontal: 3 }}>
-                        <Image source={mytam} style={styles.image} />
-                        <Text style={styles.name}>Mỹ Tâm</Text>
-                    </View>
-                    <View style={{ alignItems: 'center', paddingHorizontal: 3 }}>
-                        <Image source={bichphuong} style={styles.image} />
-                        <Text style={styles.name}>Bích Phương</Text>
-                    </View>
-                    <View style={{ alignItems: 'center', paddingHorizontal: 3 }}>
-                        <Image source={khoimy} style={styles.image} />
-                        <Text style={styles.name}>Khởi My</Text>
-                    </View>
-                    <View style={{ alignItems: 'center', paddingHorizontal: 3 }}>
-                        <Image source={baoanh} style={styles.image} />
-                        <Text style={styles.name}>Bảo Anh</Text>
-                    </View>
-
+                ))}
                 </ScrollView>
             </View>
         );

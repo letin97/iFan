@@ -1,27 +1,36 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import Grid from '../../components/Grid';
 import TopShow from '../../components/TopShow';
-import ShowDetail from '../detail/ShowDetail';
-import Map from '../../components/Map';
-import SwiperImage from '../../components/SwiperImage';
-import Figures from '../../components/Figures';
-import ScrollViewImage from '../../components/ScrollViewImage';
-import Singer from '../singer/Singer';
-import SingerCard from '../../components/SingerCard';
+
+import initData from '../../api/initData';
 
 export default class Home extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            topshow: {},
+            shows: []
+        };
+    }
+
+    componentDidMount() {
+        initData()
+            .then(responJSON => {
+                const { topshow, shows } = responJSON;
+                this.setState({ topshow, shows });
+            });
+    }
 
     render() {
         return (
             <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
-
-                <TopShow navigation={this.props.navigation} />
-                <Grid navigation={this.props.navigation} />
-            </ScrollView>
-            
+                <TopShow navigation={this.props.navigation} topshow={this.state.topshow} />
+                <Grid navigation={this.props.navigation} shows={this.state.shows} />
+            </ScrollView>   
         );
-    }
+    }  
 }
 

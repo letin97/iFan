@@ -4,49 +4,50 @@ import {
     TouchableOpacity, ImageBackground, StyleSheet, Image
 } from 'react-native';
 
-import img from '../assets/icons/show1.jpg';
 import icStar from '../assets/icons/star.png';
 
+const url = 'http://192.168.1.4/ifan/banners/show/';
 const paddingValue = 5;
 const width = Dimensions.get('window').width;
 
 export default class TopShow extends Component {
 
+    goToDetail(id) {
+        this.props.navigation.navigate('Detail', { id });
+    }
+
+    parseDate(input) {
+        const parts = input.trim().replace(/ +(?= )/g,'').split(/[\s-\/:]/);
+        return parts;
+    }
+
     render() {
+        const { topshow } = this.props;
+        if (Object.keys(topshow).length === 0) return null;
+           
         const { wapper, imageStyle, showCard, boderTime, showTime, showInfo, showImp, showPrice,
-            showDate, showMonth, showName, showPlace, numberPeple, startIcon, boderPrice } = styles;
+            showDate, showMonth, showName, showPlace, startIcon, boderPrice } = styles;
+
         return (
             <View style={wapper}>
-                <TouchableOpacity style={showCard}>
-                    <ImageBackground source={img} style={imageStyle}>
+                <TouchableOpacity style={showCard} onPress={() => this.goToDetail(topshow.id)}>
+                    <ImageBackground source={{ uri: `${url}${topshow.banners[0]}` }} style={imageStyle}>
                         <View style={boderTime}>
-                            <Text style={showDate}>18</Text>
-                            <Text style={showMonth}>09</Text>
+                            <Text style={showDate}>{this.parseDate(topshow.time)[2]}</Text>
+                            <Text style={showMonth}>{this.parseDate(topshow.time)[1]}</Text>
                         </View>
                     </ImageBackground>
-
                     <View style={showInfo}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <View style={{ flex: 7 }}>
-                                <Text style={showTime}>TODAY 20:00</Text>
-                                <Text style={showName}>Show diễn Heniken</Text>
-                                <Text style={showPlace}>Nhà hát Thành phố</Text>
-                            </View>
-                            <View style={{ flex: 3, justifyContent: 'center' }}>
-                                <Text style={numberPeple}>1,2k người</Text>
-                            </View>
-
-                        </View>
-
+                        <Text style={showTime}>{this.parseDate(topshow.time)[3]}:{this.parseDate(topshow.time)[4]}</Text>
+                        <Text style={showName}>{topshow.name}</Text>
+                        <Text style={showPlace}>{topshow.place}</Text>
                         <View style={showImp}>
                             <View style={boderPrice}>
-                                <Text style={showPrice}>200,000</Text>
+                                <Text style={showPrice}>{topshow.price}</Text>
                             </View>
-
                             <Image source={icStar} style={startIcon} />
                         </View>
                     </View>
-
                 </TouchableOpacity>
             </View>
         );
@@ -128,11 +129,6 @@ const styles = StyleSheet.create({
         paddingVertical: 6,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    numberPeple: {
-        color: '#A0A0A0',
-        fontSize: 18,
-        fontWeight: 'bold',
     },
     startIcon: {
         width: 20,

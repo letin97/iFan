@@ -4,21 +4,26 @@ import {
     TouchableOpacity, ImageBackground, StyleSheet, Image
 } from 'react-native';
 
-import img from '../assets/icons/show1.jpg';
 import icStar from '../assets/icons/star.png';
 
+const url = 'http://192.168.1.4/ifan/banners/show/';
 const paddingValue = 5;
 const width = Dimensions.get('window').width;
 
 
 export default class Grid extends Component {
 
-    goToDetail() {
-        this.props.navigation.navigate('Detail');
+    goToDetail(id) {
+        this.props.navigation.navigate('Detail', { id });
     }
 
+    parseDate(input) {
+        const parts = input.trim().replace(/ +(?= )/g,'').split(/[\s-\/:]/);
+        return parts;
+    }
+    
     render() {
-        const topProduct = [1, 2];
+        const { shows } = this.props;
         const { wapper, imageStyle, showCard, boderTime, showTime, showInfo, showImp, showPrice,
             showDate, showMonth, showName, showPlace, body, startIcon, boderPrice } = styles;
         return (
@@ -26,29 +31,26 @@ export default class Grid extends Component {
                 <ListView
                     enableEmptySections
                     contentContainerStyle={body}
-                    dataSource={new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(topProduct)}
+                    dataSource={new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(shows)}
                     renderRow={show => (
-                        <TouchableOpacity style={showCard} onPress={() => this.goToDetail()}>
-                            <ImageBackground source={img} style={imageStyle}>
+                        <TouchableOpacity style={showCard} onPress={() => this.goToDetail(show.id)}>
+                            <ImageBackground source={{ uri: `${url}${show.banners[0]}` }} style={imageStyle}>
                                 <View style={boderTime}>
-                                    <Text style={showDate}>18</Text>
-                                    <Text style={showMonth}>09</Text>
+                                    <Text style={showDate}>{this.parseDate(show.time)[2]}</Text>
+                                    <Text style={showMonth}>{this.parseDate(show.time)[1]}</Text>
                                 </View>
                             </ImageBackground>
-
                             <View style={showInfo}>
-                                <Text style={showTime}>TODAY 20:00</Text>
-                                <Text style={showName}>Show diễn Heniken</Text>
-                                <Text style={showPlace}>Nhà hát Thành phố</Text>
+                                <Text style={showTime}>{this.parseDate(show.time)[3]}:{this.parseDate(show.time)[4]}</Text>
+                                <Text numberOfLines={2} style={showName}>{show.name}</Text>
+                                <Text numberOfLines={2} style={showPlace}>{show.place}</Text>
                                 <View style={showImp}>
                                     <View style={boderPrice}>
-                                        <Text style={showPrice}>200,000</Text>
+                                        <Text style={showPrice}>{show.price}</Text>
                                     </View>
-
                                     <Image source={icStar} style={startIcon} />
                                 </View>
-                            </View>
-
+                            </View>                       
                         </TouchableOpacity>
                     )}
                     renderSeparator={(sectionID, rowID) => {
