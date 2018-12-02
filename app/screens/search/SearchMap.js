@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 
 import icSchedule from '../../assets/icons/schedule_fill.png';
-import ShowCard from '../../components/ShowCard';
+import ShowCard from '../home/ShowCard';
 
 const width = Dimensions.get('window').width;
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image } from 'react-native';
 
-import img from '../assets/icons/mtp.jpg';
+import img from '../../assets/icons/mtp.jpg';
 
 export default class SingerCard extends Component {
 

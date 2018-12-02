@@ -3,14 +3,46 @@ import {
     Text, View, StyleSheet, ScrollView, Image,
     TouchableOpacity, ImageBackground
 } from 'react-native';
+
 import ViewMoreText from 'react-native-view-more-text';
 import LinearGradient from 'react-native-linear-gradient';
 
-import backgounrd from '../../assets/icons/backgroundmtp.jpg';
-import mtp from '../../assets/icons/mtp.jpg';
-import ShowCard from '../../components/ShowCard';
+import getSingerDetail from '../../api/getSingerDetail';
+import getShowSinger from '../../api/getShowSinger';
+
+import ListShow from '../interest/ListShow';
+
+const urlbanner = 'http://192.168.1.4/ifan/banners/singer/';
+const urlimage = 'http://192.168.1.4/ifan/images/singer/';
 
 export default class Singer extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            singer: {},
+            shows: []
+        };
+    }
+
+    componentDidMount() {
+        const { navigation } = this.props;
+        const id = navigation.getParam('id', 'NO-ID');
+
+        getSingerDetail(id)
+        .then(responJSON => {
+            const { singer } = responJSON;
+            this.setState({ singer });
+        })
+        .catch(err => console.log(err));
+
+        getShowSinger(id)
+        .then(responJSON => {
+            const { shows } = responJSON;
+            this.setState({ shows });
+        })
+        .catch(err => console.log(err));
+    }
 
     renderViewMore(onPress) {
         return (
@@ -31,10 +63,13 @@ export default class Singer extends Component {
     }
 
     render() {
+        const { singer } = this.state;
+        if (Object.keys(singer).length === 0) return null;
+
         return (
             <ScrollView style={styles.container}>
                 <View style={styles.badge}>
-                    <ImageBackground source={backgounrd} style={{ height: 180 }}>
+                    <ImageBackground source={{ uri: `${urlbanner}${singer.banners[0]}` }} style={{ height: 180 }}>
                         <LinearGradient
                             colors={['transparent', 'rgba(180,180,180,0.5)']}
                             start={{ x: 0.0, y: 0.0 }} end={{ x: 0.0, y: 1.0 }}
@@ -42,10 +77,10 @@ export default class Singer extends Component {
                         >
                             <View style={styles.borderavatar}>
 
-                                <Image style={styles.avatar} source={mtp} />
+                                <Image style={styles.avatar} source={{ uri: `${urlimage}${singer.images[0]}` }} />
                                 <View style={styles.badgeInfo}>
                                     <View style={{ marginStart: 10 }}>
-                                        <Text style={styles.name}>Sơn Tùng MTP</Text>
+                                        <Text style={styles.name}>{singer.name}</Text>
                                     </View>
 
                                     <View style={{ justifyContent: 'flex-end' }}>
@@ -57,33 +92,27 @@ export default class Singer extends Component {
                         </LinearGradient>
                     </ImageBackground>
                     <View style={styles.interest}>
-                        <Text style={styles.number}>18.3k</Text>
+                        <Text style={styles.number}>{singer.num_interested}</Text>
                         <Text style={styles.text}>Quan tâm</Text>
                     </View>
                 </View>
                 <View style={styles.separator} />
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, alignItems: 'center' }}>
                     <ViewMoreText
                         numberOfLines={3}
                         renderViewMore={this.renderViewMore}
                         renderViewLess={this.renderViewLess}
                         textStyle={{ paddingHorizontal: 10, fontSize: 12, marginTop: 15 }}
                     >
-                        <Text>
-                            M-TP tên thật là Nguyễn Thanh Tùng. Cậu thanh niên sinh năm 1994 ở Thái Bình sớm bị hip hop hớp hồn giống như bao bạn bè đồng trang lứa. Và với niềm đam mê này, M-TP quyết tâm khăn gói tới Hà Nội học hỏi thêm về hip hop. Sau khi tốt nghiệp cấp 3, anh chàng dự định sẽ đầu quân làm học viên tại Học viện M4Me để rèn rũa khả năng ca hát, sáng tác... trước khi chính thức theo đuổi con đường âm nhạc. Ngoài đam mê ca hát, M-TP còn có khả năng sáng tác, chơi piano và nhảy cực "đỉnh". Với thế mạnh này, anh chàng không ngừng cố gắng học tập các bậc đàn anh đàn chị và đã có trong tay một hành trang khá "khủng" những sáng tác của riêng mình
-                        </Text>
+                        <Text>{singer.description}</Text>
                     </ViewMoreText>
                 </View>
 
-                <ShowCard />
-                <ShowCard />
-                <ShowCard />
-                <ShowCard />
-                <ShowCard />
+                <ListShow shows={this.state.shows} />
             </ScrollView>
         );
     }
-};
+}
 
 const styles = StyleSheet.create({
     container: {

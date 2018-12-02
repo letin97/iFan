@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { ScrollView } from 'react-native';
 
-import Grid from '../../components/Grid';
-import TopShow from '../../components/TopShow';
+import Grid from './Grid';
+import TopShow from './TopShow';
 
 import initData from '../../api/initData';
 

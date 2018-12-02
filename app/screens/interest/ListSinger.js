@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 
-import SingerCard from '../../components/SingerCard';
+import SingerCard from '../home/ShowCard';
 
 export default class ListShow extends Component {
 

@@ -1,33 +1,28 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 
-import mtp from '../assets/icons/mtp.jpg';
-import soobin from '../assets/icons/soobin.jpg';
-import mytam from '../assets/icons/mytam.jpg';
-import khoimy from '../assets/icons/khoimy.jpg';
-import bichphuong from '../assets/icons/bichphuong.jpg';
-import baoanh from '../assets/icons/baoanh.jpg';
+const url = 'http://192.168.1.4/ifan/images/singer/';
 
-export default class ScrollViewImage extends Component {
+export default class ScrollSinger extends Component {
 
-    goToSinger() {
-        this.props.navigation.navigate('Singer');
+    goToDetail(id) {
+        this.props.navigation.navigate('Singer', { id });
     }
 
     render() {
-        const { show } = this.props;
+        const { singers } = this.props;
         
         return (
-            <View>
+            <View style={{ marginBottom: 5 }}>
                 <Text style={styles.text}>Ca sĩ</Text>
                 <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                 >
-                {show.singers.map(s => (
-                    <TouchableOpacity onPress={this.goToSinger.bind(this)} key={s.id}>
+                {singers.map(s => (
+                    <TouchableOpacity onPress={() => this.goToDetail(s.id)} key={s.id}>
                         <View style={{ alignItems: 'center', paddingHorizontal: 3 }}>
-                            <Image source={mtp} style={styles.image} />
+                            <Image source={{ uri: `${url}${s.images[0]}` }} style={styles.image} />
                             <Text style={styles.name}>{s.name}</Text>
                         </View>
                     </TouchableOpacity>
@@ -44,7 +39,9 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 14,
-        padding: 10,
+        marginLeft: 10,
+        marginBottom: 10,
+        marginTop: 5,
         fontWeight: 'bold',
     },
     name: {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image } from 'react-native';
 import Swiper from 'react-native-swiper';
 
-export default class SwiperImage extends Component {
+export default class SwiperShow extends Component {
 
     // componentDidMount() {
     //     Image.getSize(myUri, (width, height) => {

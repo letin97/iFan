@@ -4,7 +4,7 @@ import {
     TouchableOpacity, ImageBackground, StyleSheet, Image
 } from 'react-native';
 
-import icStar from '../assets/icons/star.png';
+import icStar from '../../assets/icons/star.png';
 
 const url = 'http://192.168.1.4/ifan/banners/show/';
 const paddingValue = 5;

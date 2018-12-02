@@ -1,32 +1,45 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image } from 'react-native';
+import { Text, View, StyleSheet, Image, ImageBackground } from 'react-native';
 
-import img from '../assets/icons/show1.jpg';
-import icStar from '../assets/icons/star.png';
-import icLocation from '../assets/icons/local.png';
+import icStar from '../../assets/icons/star.png';
+import icLocation from '../../assets/icons/local.png';
+
+const url = 'http://192.168.1.4/ifan/banners/show/';
 
 export default class ShowCard extends Component {
 
+    parseDate(input) {
+        const parts = input.trim().replace(/ +(?= )/g,'').split(/[\s-\/:]/);
+        return parts;
+    }
+
     render() {
-        const { showCard, imageStyle, showTime, showName, showPlace, showAddress, showImp,
+        const { show } = this.props;
+
+        const { showCard, imageStyle, boderTime, showDate, showMonth, showTime, showName, showPlace, showAddress, showImp,
             boderPrice, showPrice, startIcon, locationIcon } = styles;
         return (
             <View style={showCard}>
                 <View style={{ flexDirection: 'row' }}>
                     <View style={{ flex: 4 }}>
-                        <Image source={img} style={imageStyle} />
+                        <ImageBackground source={{ uri: `${url}${show.banners[0]}` }} style={imageStyle}>
+                                <View style={boderTime}>
+                                    <Text style={showDate}>{this.parseDate(show.time)[2]}</Text>
+                                    <Text style={showMonth}>{this.parseDate(show.time)[1]}</Text>
+                                </View>
+                        </ImageBackground>
                     </View>
                     <View style={{ flex: 6, paddingHorizontal: 10 }}>
-                        <Text style={showTime}>TODAY 20:00</Text>
-                        <Text style={showName}>Show diễn Heniken</Text>
-                        <Text style={showPlace}>Nhà hát Thành phố</Text>
+                        <Text style={showTime}>{this.parseDate(show.time)[3]}:{this.parseDate(show.time)[4]}</Text>
+                        <Text style={showName}>{show.name}</Text>
+                        <Text style={showPlace}>{show.place}</Text>
                         <View style={{ flexDirection: 'row' }}>
                             <Image source={icLocation} style={locationIcon} />
-                            <Text style={showAddress}>07 Công Trường Lam Sơn, Bến Nghé, Quận 1, Hồ Chí Minh</Text>
+                            <Text style={showAddress}>{show.address}</Text>
                         </View>
                         <View style={showImp}>
                             <View style={boderPrice}>
-                                <Text style={showPrice}>200,000</Text>
+                                <Text style={showPrice}>{show.price}</Text>
                             </View>
                             <Image source={icStar} style={startIcon} />
                         </View>
@@ -48,7 +61,30 @@ const styles = StyleSheet.create({
     imageStyle: {
         width: null,
         height: 120,
-        borderRadius: 5
+        borderRadius: 5,
+        overflow: 'hidden',
+    },
+    boderTime: {
+        borderWidth: 1,
+        borderColor: '#A0A0A0',
+        borderRadius: 5,
+        position: 'absolute', // child
+        bottom: 0, // position where you want
+        left: 0,
+        backgroundColor: 'rgba(40,40,40,0.6)',
+        margin: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+    },
+    showDate: {
+        color: '#fff',
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    showMonth: {
+        color: '#fff',
+        fontSize: 12,
     },
     showTime: {
         color: '#FF1F1F',

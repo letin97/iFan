@@ -4,11 +4,14 @@ import {
     StyleSheet, Image, ScrollView
 } from 'react-native';
 
-import ScrollViewImage from '../../components/ScrollViewImage';
-import Map from '../../components/Map';
-import SwiperImage from '../../components/SwiperImage';
+import ScrollSinger from './ScrollSinger';
+import Map from './Map';
+import Information from './Infomation';
+import SwiperShow from './SwiperShow';
 
-import getShow from '../../api/getShow';
+import getShowDetail from '../../api/getShowDetail';
+import getSingerShow from '../../api/getSingerShow';
+
 import icStar from '../../assets/icons/star.png';
 import icAttend from '../../assets/icons/attend.png';
 import icShare from '../../assets/icons/share.png';
@@ -24,17 +27,26 @@ export default class ShowDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            show: {}
+            show: {},
+            singers: []
         };
     }
 
     componentDidMount() {
         const { navigation } = this.props;
         const id = navigation.getParam('id', 'NO-ID');
-        getShow(id)
+
+        getShowDetail(id)
         .then(responJSON => {
             const { show } = responJSON;
             this.setState({ show });
+        })
+        .catch(err => console.log(err));
+
+        getSingerShow(id)
+        .then(responJSON => {
+            const { singers } = responJSON;
+            this.setState({ singers });
         })
         .catch(err => console.log(err));
     }
@@ -121,9 +133,10 @@ export default class ShowDetail extends Component {
                     </View>
                 </View>
 
-                <ScrollViewImage navigation={this.props.navigation} show={this.state.show} />
-                <Map />
-                <SwiperImage />
+                <ScrollSinger navigation={this.props.navigation} singers={this.state.singers} />
+                <Information show={this.state.show} />
+                <Map id={this.state.show.id_place} />
+                <SwiperShow />
             </ScrollView>
         );
     }
