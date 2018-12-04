@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { View, ScrollView, TouchableOpacity } from 'react-native';
+import { View, ListView, TouchableOpacity } from 'react-native';
 
 import ShowCard from '../home/ShowCard';
 
 export default class ListShow extends Component {
 
     goToDetail(id) {
-        this.props.navigation.navigate('Detail', { id });
+        this.props.navigation.push('Detail', { id });
     }
 
     render() {
@@ -14,13 +14,15 @@ export default class ListShow extends Component {
 
         return (
             <View style={{ backgroundColor: '#fff' }}>
-                <ScrollView>
-                {shows.map(s => (
-                    <TouchableOpacity onPress={() => this.goToDetail(s.id)} key={s.id}>
-                        <ShowCard show={s} />
-                    </TouchableOpacity>
-                ))}
-                </ScrollView>
+                <ListView
+                    enableEmptySections
+                    dataSource={new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(shows)}
+                    renderRow={show => (
+                        <TouchableOpacity onPress={() => this.goToDetail(show.id)}>
+                            <ShowCard show={show} />
+                        </TouchableOpacity>
+                    )}
+                />
             </View>        
         );
     }

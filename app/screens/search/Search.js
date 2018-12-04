@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import {
     Text, View, StyleSheet, ImageBackground,
-    TouchableOpacity, Dimensions
+    TouchableOpacity, Dimensions, ScrollView,
+    TextInput
 } from 'react-native';
 
 import icSchedule from '../../assets/icons/schedule_fill.png';
-import ShowCard from '../home/ShowCard';
+import ListShow from '../interest/ListShow';
+
+import searchShow from '../../api/searchShow';
 
 const width = Dimensions.get('window').width;
 
@@ -15,59 +18,91 @@ export default class Search extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isShowPlace: true,
-            arrayPlaces: [{ latitude: 10.7766387, longitude: 106.7031052, name: 'Nhà hát', description: 'A' },
-            { latitude: 10.8020398, longitude: 106.6672654, name: 'Sân vận động Quân khu 7', description: 'C' },
-            { latitude: 10.7877679, longitude: 106.6993208, name: 'Sân vận động Hoa Lư', description: 'B' }]
+            shows: [],
+            key: ''
         };
     }
 
-    goToSearchMap() {
-        this.props.navigation.navigate('SearchMap');
+    componentDidMount() {
+        const key = '';
+        searchShow(key)
+            .then(responJSON => {
+                const { shows } = responJSON;
+                this.setState({ shows });
+            })
+            .catch(err => console.log(err));
+    }
+
+    onSearch() {
+        searchShow(this.state.key)
+            .then(responJSON => {
+                const { shows } = responJSON;
+                this.setState({ shows });
+            })
+            .catch(err => console.log(err));
+    }
+
+    parseDate(input) {
+        const parts = input.trim().replace(/ +(?= )/g, '').split(/[\s-\/:]/);
+        return parts;
+    }
+
+    goToSearchMap(shows) {
+        this.props.navigation.navigate('SearchMap', { shows });
     }
 
     render() {
+        const { shows } = this.state;
+
         return (
-            <View style={{ flex: 1, backgroundColor: '#fff' }}>
-                <TouchableOpacity style={styles.container} onPress={this.goToSearchMap.bind(this)}>
-                    <MapView
-                        provider={PROVIDER_GOOGLE}
-                        style={styles.map}
-                        initialRegion={{
-                            latitude: this.state.arrayPlaces[0].latitude,
-                            longitude: this.state.arrayPlaces[0].longitude,
-                            latitudeDelta: 0.0421,
-                            longitudeDelta: 0.0421,
-                        }}
-                        //scrollEnabled={false}
-                        liteMode
-                    >
-                        {this.state.arrayPlaces.map(place => (
-                            <Marker
-                                key={place.latitude}
-                                coordinate={{
-                                    latitude: place.latitude,
-                                    longitude: place.longitude,
-                                    latitudeDelta: 0.0421,
-                                    longitudeDelta: 0.0421,
-                                }}
-                                title={place.name}
-                                description={place.description}
-                            >
-                                <View>
-                                    <ImageBackground source={icSchedule} style={styles.icStyle} >
-                                        <View style={{ alignItems: 'center', marginTop: 6 }}>
-                                            <Text style={styles.date}>2</Text>
-                                        </View>
-                                    </ImageBackground>
-                                </View>
-                            </Marker>
-                        ))}
-                    </MapView>
-                </TouchableOpacity>
-                <ShowCard />
-                <ShowCard />
-            </View >
+            <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
+                <TextInput
+                    style={styles.textInput}
+                    placeholder="Tên show diễn, nghệ sĩ, ca sĩ,..."
+                    underlineColorAndroid="transparent"
+                    value={this.state.key}
+                    onChangeText={(text) => this.setState({ key: text })}
+                    onSubmitEditing={() => this.onSearch()}
+                />
+                {typeof shows !== 'undefined' && shows.length > 0 ?
+                    <TouchableOpacity style={styles.container} onPress={() => this.goToSearchMap(shows)}>
+                        <MapView
+                            provider={PROVIDER_GOOGLE}
+                            style={styles.map}
+                            initialRegion={{
+                                latitude: parseFloat(shows[0].latitude),
+                                longitude: parseFloat(shows[0].longitude),
+                                latitudeDelta: 0.0421,
+                                longitudeDelta: 0.0421,
+                            }}
+                            //scrollEnabled={false}
+                            liteMode
+                        >
+                            {shows.map(show => (
+                                <Marker
+                                    key={show.id}
+                                    coordinate={{
+                                        latitude: parseFloat(show.latitude),
+                                        longitude: parseFloat(show.longitude),
+                                        latitudeDelta: 0.0421,
+                                        longitudeDelta: 0.0421,
+                                    }}
+                                    title={show.name}
+                                    description={show.place}
+                                >
+                                    <View>
+                                        <ImageBackground source={icSchedule} style={styles.icStyle} >
+                                            <View style={{ alignItems: 'center', marginTop: 6 }}>
+                                                <Text style={styles.date}>{this.parseDate(show.time)[2]}</Text>
+                                            </View>
+                                        </ImageBackground>
+                                    </View>
+                                </Marker>
+                            ))}
+                        </MapView>
+                    </TouchableOpacity> : null}
+                <ListShow navigation={this.props.navigation} shows={this.state.shows} />
+            </ScrollView >
         );
     }
 }
@@ -78,4 +113,15 @@ const styles = StyleSheet.create({
     text: { fontSize: 14, padding: 10, fontWeight: 'bold', },
     icStyle: { width: 30, height: 30 },
     date: { color: '#fff', fontWeight: 'bold' },
+    textInput: {
+        backgroundColor: '#FFF',
+        height: 30,
+        paddingLeft: 10,
+        paddingVertical: 0,
+        borderColor: '#AAA',
+        borderWidth: 1,
+        marginHorizontal: 10,
+        marginVertical: 5,
+        borderRadius: 5,
+    },
 });

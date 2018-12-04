@@ -35,7 +35,7 @@ export default class ShowCard extends Component {
                         <Text style={showPlace}>{show.place}</Text>
                         <View style={{ flexDirection: 'row' }}>
                             <Image source={icLocation} style={locationIcon} />
-                            <Text style={showAddress}>{show.address}</Text>
+                            <Text numberOfLines={1} style={showAddress}>{show.address}</Text>
                         </View>
                         <View style={showImp}>
                             <View style={boderPrice}>
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     },
     imageStyle: {
         width: null,
-        height: 120,
+        height: 113,
         borderRadius: 5,
         overflow: 'hidden',
     },
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     showName: {
         color: '#000',
         fontWeight: 'bold',
-        fontSize: 16
+        fontSize: 14
     },
     showPlace: {
         color: '#6E6E6E',

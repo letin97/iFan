@@ -1,5 +1,5 @@
 const signIn = (email, password) => (
-    fetch(`http://192.168.1.4/api/login.php`, //eslint-disable-line
+    fetch(`http://192.168.1.4/ifan/login.php`, //eslint-disable-line
     {
         method: 'POST',
         headers: {

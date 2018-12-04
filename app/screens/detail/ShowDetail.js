@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
     Dimensions, View, Text,
-    StyleSheet, Image, ScrollView
+    StyleSheet, Image, ScrollView,
+    TouchableOpacity
 } from 'react-native';
 
 import ScrollSinger from './ScrollSinger';
@@ -11,8 +12,13 @@ import SwiperShow from './SwiperShow';
 
 import getShowDetail from '../../api/getShowDetail';
 import getSingerShow from '../../api/getSingerShow';
+import getUserShow from '../../api/getUserShow';
+
+import sendShow from '../../api/sendShow';
+import getToken from '../../api/getToken';
 
 import icStar from '../../assets/icons/star.png';
+import icStarFill from '../../assets/icons/star-fill.png';
 import icAttend from '../../assets/icons/attend.png';
 import icShare from '../../assets/icons/share.png';
 import icLocal from '../../assets/icons/local.png';
@@ -28,7 +34,9 @@ export default class ShowDetail extends Component {
         super(props);
         this.state = {
             show: {},
-            singers: []
+            singers: [],
+            userShow: [],
+            isInterested: false
         };
     }
 
@@ -49,8 +57,22 @@ export default class ShowDetail extends Component {
             this.setState({ singers });
         })
         .catch(err => console.log(err));
+
+        getToken()
+        .then(token => getUserShow(token))
+        .then(responJSON => this.setState({ userShow: responJSON }))
+        .catch(err => console.log(err)); 
     }
 
+    async onSendShow() {
+        try {
+            const token = await getToken();
+            sendShow(token, this.state.show);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+    
     parseDate(input) {
         const parts = input.trim().replace(/ +(?= )/g,'').split(/[\s-\/:]/);
         return parts;
@@ -87,10 +109,10 @@ export default class ShowDetail extends Component {
                         </View>
 
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 10 }}>
-                            <View style={{ alignItems: 'center' }}>
+                            <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => this.onSendShow()}>
                                 <Image source={icStar} style={icStyle1} />
                                 <Text style={icInfo}>Quan tâm</Text>
-                            </View>
+                            </TouchableOpacity>
                             <View style={{ alignItems: 'center' }}>
                                 <Image source={icAttend} style={icStyle1} />
                                 <Text style={icInfo}>Tham gia</Text>

@@ -6,14 +6,14 @@ const url = 'http://192.168.1.4/ifan/images/singer/';
 export default class ScrollSinger extends Component {
 
     goToDetail(id) {
-        this.props.navigation.navigate('Singer', { id });
+        this.props.navigation.push('Singer', { id });
     }
 
     render() {
         const { singers } = this.props;
         
         return (
-            <View style={{ marginBottom: 5 }}>
+            <View style={{ marginBottom: 10 }}>
                 <Text style={styles.text}>Ca sĩ</Text>
                 <ScrollView
                     horizontal={true}

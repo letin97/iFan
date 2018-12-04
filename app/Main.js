@@ -10,6 +10,8 @@ import InterestScreen from './screens/interest/Interest';
 import NavBar from './navigation/NavBar';
 import SearchScreen from './screens/search/Search';
 import SearchMapScreen from './screens/search/SearchMap';
+import AuthenticationScreen from './screens/authentication/Authentication';
+
 import ListShow from './screens/interest/ListShow';
 import ListSinger from './screens/interest/ListSinger';
 
@@ -34,6 +36,9 @@ const HomeStack = createStackNavigator({
     },
     SearchMap: {
         screen: SearchMapScreen
+    },
+    Authentication: {
+        screen: AuthenticationScreen
     }
 }, {
         initialRouteName: 'Home',

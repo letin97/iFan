@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     showName: {
         color: '#000',
         fontWeight: 'bold',
-        fontSize: 16
+        fontSize: 14
     },
     showPlace: {
         color: '#6E6E6E',

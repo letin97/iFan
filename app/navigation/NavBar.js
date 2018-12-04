@@ -18,11 +18,17 @@ export default class NavBar extends Component {
             ? (windowWidth - this.state.width) / 2
             : undefined;
 
-        const renderRightContent = () => (
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('Search')}>
-                <Image source={icSearch} style={styles.icBack} />
-            </TouchableOpacity>
-        );
+        const renderRightContent = () => {
+            if (this.props.navigation.state.routeName !== 'Search' && this.props.navigation.state.routeName !== 'SearchMap') {
+                return (
+                    <View>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Search')}>
+                            <Image source={icSearch} style={styles.icBack} />
+                        </TouchableOpacity>
+                    </View>
+                );
+            }
+        };
 
         return (
             <View style={[{ width }, styles.right]}>
@@ -50,7 +56,9 @@ export default class NavBar extends Component {
 
             return (
                 <View>
-                    <Image source={icLogo} style={styles.icStyle} />
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Authentication')}>
+                        <Image source={icLogo} style={styles.icStyle} />
+                    </TouchableOpacity>
                 </View>
             );
         };

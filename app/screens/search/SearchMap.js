@@ -15,73 +15,81 @@ export default class SearchMap extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isShowPlace: true,
-            region: {
-                latitude: 10.7766387,
-                longitude: 106.7031052,
-                latitudeDelta: 0.0421,
-                longitudeDelta: 0.0421,
-            },
-            arrayPlaces: [{ latitude: 10.7766387, longitude: 106.7031052, name: 'Nhà hát', description: 'A' },
-            { latitude: 10.8020398, longitude: 106.6672654, name: 'Sân vận động Quân khu 7', description: 'C' },
-            { latitude: 10.7877679, longitude: 106.6993208, name: 'Sân vận động Hoa Lư', description: 'B' }]
+            isShowPlace: false,
+            showChosen: {}
         };
     }
 
-    showPlace() {
-        this.setState({ isShowPlace: true });
+    componentWillMount() {
+        const shows = this.props.navigation.getParam('shows', 'NO-SHOWS');
+        this.setState({ isShowPlace: true, showChosen: shows[0] });
+    }
+
+    goToDetail(id) {
+        this.props.navigation.push('Detail', { id });
+    }
+
+    parseDate(input) {
+        const parts = input.trim().replace(/ +(?= )/g, '').split(/[\s-\/:]/);
+        return parts;
+    }
+
+    chooseShow(show) {
+        this.setState({ isShowPlace: true, showChosen: show });
     }
 
     render() {
+        const shows = this.props.navigation.getParam('shows', 'NO-SHOWS');
+      
         return (
-            <View style={{ flex: 1 }}>
-                <View style={styles.container}>
+            <View style={styles.container}>
+                {typeof shows !== 'undefined' && shows.length > 0 ?
                     <MapView
                         provider={PROVIDER_GOOGLE}
                         style={styles.map}
-                        initialRegion={this.state.region}
-                        //liteMode
+                        initialRegion={{
+                            latitude: parseFloat(shows[0].latitude),
+                            longitude: parseFloat(shows[0].longitude),
+                            latitudeDelta: 0.0421,
+                            longitudeDelta: 0.0421,
+                        }}
+                    //liteMode
                     >
-                        {this.state.arrayPlaces.map(place => (
+                        {shows.map(show => (
                             <Marker
-                                key={place.latitude}
+                                key={show.id}
                                 coordinate={{
-                                    latitude: place.latitude,
-                                    longitude: place.longitude,
+                                    latitude: parseFloat(show.latitude),
+                                    longitude: parseFloat(show.longitude),
                                     latitudeDelta: 0.0421,
                                     longitudeDelta: 0.0421,
                                 }}
-                                title={place.name}
-                                description={place.description}
-                                onPress={this.showPlace.bind(this)}
+                                title={show.name}
+                                description={show.place}
+                                onPress={() => this.chooseShow(show)}
                             >
-                                <View>
-                                    <ImageBackground source={icSchedule} style={styles.icStyle} >
-                                        <View style={{ alignItems: 'center', marginTop: 6 }}>
-                                            <Text style={styles.date}>2</Text>
-                                        </View>
-                                    </ImageBackground>
-                                </View>
+                                <ImageBackground source={icSchedule} style={styles.icStyle} >
+                                    <View style={{ alignItems: 'center', marginTop: 6 }}>
+                                        <Text style={styles.date}>{this.parseDate(show.time)[2]}</Text>
+                                    </View>
+                                </ImageBackground>
                             </Marker>
                         ))}
 
-                    </MapView>
+                    </MapView> : null}
 
-                    {this.state.isShowPlace ?
-                        <View style={styles.overlay}>
-                            <View style={{ alignItems: 'flex-end', marginBottom: 3 }}>
-                                <TouchableOpacity onPress={() => this.setState({ isShowPlace: false })}>
-                                    <Text style={styles.close}>Đóng</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Detail')}>
-                                <ShowCard />
+                {this.state.isShowPlace ?
+                    <View style={styles.overlay}>
+                        <View style={{ alignItems: 'flex-end', marginBottom: 3 }}>
+                            <TouchableOpacity onPress={() => this.setState({ isShowPlace: false })}>
+                                <Text style={styles.close}>Đóng</Text>
                             </TouchableOpacity>
-                            
-                        </View> : null
-                    }
-                </View>
-            </View >
+                        </View>
+                        <TouchableOpacity onPress={() => this.goToDetail(this.state.showChosen.id)}>
+                            <ShowCard show={this.state.showChosen} />
+                        </TouchableOpacity>
+                    </View> : null}
+            </View>
         );
     }
 }

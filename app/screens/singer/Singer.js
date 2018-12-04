@@ -108,7 +108,7 @@ export default class Singer extends Component {
                     </ViewMoreText>
                 </View>
 
-                <ListShow shows={this.state.shows} />
+                <ListShow navigation={this.props.navigation} shows={this.state.shows} />
             </ScrollView>
         );
     }
