@@ -1,5 +1,5 @@
-const gettOrderHistory = (token) => (
-    fetch(`http://192.168.1.4/api/order_history.php`, //eslint-disable-line
+const getUserSinger = (token) => (
+    fetch(`http://ifanapp.000webhostapp.com/ifan/user_singer.php`, //eslint-disable-line
     {
         method: 'POST',
         headers: {
@@ -11,4 +11,4 @@ const gettOrderHistory = (token) => (
     .then(res => res.json())
 );
 
-export default gettOrderHistory;
+export default getUserSinger;

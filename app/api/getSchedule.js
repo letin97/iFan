@@ -1,5 +1,5 @@
 const getSchedule = () => (
-    fetch(`http://192.168.1.4/ifan/schedule.php?`) //eslint-disable-line
+    fetch(`http://ifanapp.000webhostapp.com/ifan/schedule.php?`) //eslint-disable-line
     .then(res => res.json())
 );
 

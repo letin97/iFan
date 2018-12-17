@@ -104,10 +104,13 @@ const styles = StyleSheet.create({
         fontSize: 15,
         marginBottom: 10,
         borderRadius: 20,
+        borderColor: '#FF1F1F',
+        borderWidth: 1
     },
     bigButton: {
         height: 40,
-        borderColor: '#FFF',
+        backgroundColor: '#FF1F1F',
+        borderColor: '#FF1F1F',
         borderRadius: 20,
         borderWidth: 1,
         alignItems: 'center',

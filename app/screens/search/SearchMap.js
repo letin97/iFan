@@ -5,6 +5,9 @@ import {
     TouchableOpacity, Dimensions
 } from 'react-native';
 
+import getUserShow from '../../api/getUserShow';
+import getToken from '../../api/getToken';
+
 import icSchedule from '../../assets/icons/schedule_fill.png';
 import ShowCard from '../home/ShowCard';
 
@@ -16,13 +19,25 @@ export default class SearchMap extends Component {
         super(props);
         this.state = {
             isShowPlace: false,
-            showChosen: {}
+            showChosen: {},
+            userShow: [],
+            loading: true,
         };
     }
 
     componentWillMount() {
         const shows = this.props.navigation.getParam('shows', 'NO-SHOWS');
         this.setState({ isShowPlace: true, showChosen: shows[0] });
+
+        getToken()
+            .then(token => getUserShow(token))
+            .then(responJSON => {
+                this.setState({ userShow: responJSON }, () => this.setState({ loading: false }));
+            })
+            .catch(err => {
+                console.log(err);
+                this.setState({ loading: false });
+            });
     }
 
     goToDetail(id) {
@@ -40,7 +55,7 @@ export default class SearchMap extends Component {
 
     render() {
         const shows = this.props.navigation.getParam('shows', 'NO-SHOWS');
-      
+
         return (
             <View style={styles.container}>
                 {typeof shows !== 'undefined' && shows.length > 0 ?
@@ -85,9 +100,11 @@ export default class SearchMap extends Component {
                                 <Text style={styles.close}>Đóng</Text>
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity onPress={() => this.goToDetail(this.state.showChosen.id)}>
-                            <ShowCard show={this.state.showChosen} />
-                        </TouchableOpacity>
+                        {this.state.loading === false ?
+                            <TouchableOpacity onPress={() => this.goToDetail(this.state.showChosen.id)}>
+                                <ShowCard userShow={this.state.userShow} navigation={this.props.navigation} show={this.state.showChosen} single={1} />
+                            </TouchableOpacity>
+                            : null}
                     </View> : null}
             </View>
         );

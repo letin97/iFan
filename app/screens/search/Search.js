@@ -7,9 +7,11 @@ import {
 } from 'react-native';
 
 import icSchedule from '../../assets/icons/schedule_fill.png';
-import ListShow from '../interest/ListShow';
+import ListShow from '../singer/ListShow';
 
 import searchShow from '../../api/searchShow';
+import getUserShow from '../../api/getUserShow';
+import getToken from '../../api/getToken';
 
 const width = Dimensions.get('window').width;
 
@@ -19,11 +21,12 @@ export default class Search extends Component {
         super(props);
         this.state = {
             shows: [],
+            userShow: [],
             key: ''
         };
     }
 
-    componentDidMount() {
+    componentWillMount() {
         const key = '';
         searchShow(key)
             .then(responJSON => {
@@ -31,6 +34,16 @@ export default class Search extends Component {
                 this.setState({ shows });
             })
             .catch(err => console.log(err));
+
+        getToken()
+            .then(token => getUserShow(token))
+            .then(responJSON => {
+                this.setState({ userShow: responJSON }, () => this.setState({ loading: false }));
+            })
+            .catch(err => {
+                console.log(err);
+                this.setState({ loading: false });
+            });
     }
 
     onSearch() {
@@ -101,7 +114,10 @@ export default class Search extends Component {
                             ))}
                         </MapView>
                     </TouchableOpacity> : null}
-                <ListShow navigation={this.props.navigation} shows={this.state.shows} />
+
+                {this.state.loading === false ?
+                    <ListShow navigation={this.props.navigation} shows={this.state.shows} userShow={this.state.userShow} />
+                    : null}
             </ScrollView >
         );
     }

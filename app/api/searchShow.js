@@ -1,5 +1,5 @@
 const searchShow = (key) => (
-    fetch(`http://192.168.1.4/ifan/search.php?key=${key}`) //eslint-disable-line
+    fetch(`http://ifanapp.000webhostapp.com/ifan/search.php?key=${key}`) //eslint-disable-line
     .then(res => res.json())
 );
 

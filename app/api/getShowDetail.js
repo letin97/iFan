@@ -1,5 +1,5 @@
 const getShowDetail = (id) => (
-    fetch(`http://192.168.1.4/ifan/show_detail.php?id=${id}`) //eslint-disable-line
+    fetch(`http://ifanapp.000webhostapp.com/ifan/show_detail.php?id=${id}`) //eslint-disable-line
     .then(res => res.json())
 );
 

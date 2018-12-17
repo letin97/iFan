@@ -1,12 +1,12 @@
-const sendShow = (token, show) => (
-    fetch(`http://192.168.1.4/ifan/interested.php`, //eslint-disable-line
+const sendShow = (token, show, interested) => (
+    fetch(`http://ifanapp.000webhostapp.com/ifan/send_show.php`, //eslint-disable-line
     {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json'
         },
-        body: JSON.stringify({ token, show })
+        body: JSON.stringify({ token, show, interested })
     })
     .then(res => res.text())
 );

@@ -1,5 +1,5 @@
 const changeInfo = (token, name, phone, address) => (
-    fetch(`http://192.168.1.4/api/change_info.php`, //eslint-disable-line
+    fetch(`http://ifanapp.000webhostapp.com/ifan/change_info.php`, //eslint-disable-line
     {
         method: 'POST',
         headers: {
@@ -8,7 +8,7 @@ const changeInfo = (token, name, phone, address) => (
         },
         body: JSON.stringify({ token, name, phone, address })
     })
-    .then(res => res.json())
+    .then(res => res.text())
 );
 
 export default changeInfo;

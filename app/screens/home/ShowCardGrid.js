@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import {
-    Dimensions, View, Text,
-    TouchableOpacity, ImageBackground, StyleSheet, Image
-} from 'react-native';
+import { Text, View, StyleSheet, Image, ImageBackground, Dimensions, TouchableOpacity } from 'react-native';
 
-import getToken from '../../api/getToken';
 import sendShow from '../../api/sendShow';
+import getToken from '../../api/getToken';
+import global from '../../global';
 
 import icStar from '../../assets/icons/star.png';
 import icStarFill from '../../assets/icons/star-fill.png';
@@ -14,20 +12,20 @@ const url = 'http://192.168.1.4/ifan/banners/show/';
 const paddingValue = 5;
 const width = Dimensions.get('window').width;
 
-export default class TopShow extends Component {
+export default class ShowCardGrid extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             isInterested: '0',
-        };
+        };  
     }
 
     componentWillMount() {
-        const { topshow } = this.props;
+        const { show } = this.props;
         const { userShow } = this.props;
         for (let i = 0; i < userShow.length; i++) {
-            if (userShow[i].id_show === topshow.id) {
+            if (userShow[i].id_show === show.id) {
                 this.setState({ isInterested: userShow[i].interested });
                 break;
             }
@@ -42,12 +40,8 @@ export default class TopShow extends Component {
         }
 
         getToken()
-            .then(token => sendShow(token, this.props.topshow, this.state.isInterested))
+            .then(token => sendShow(token, this.props.show, this.state.isInterested))
             .catch(err => console.log(err));
-    }
-
-    goToDetail(id, interested, style) {
-        this.props.navigation.push('Detail', { id, interested, style });
     }
 
     parseDate(input) {
@@ -55,44 +49,48 @@ export default class TopShow extends Component {
         return parts;
     }
 
+    goToDetail(id, interested, style) {
+        this.props.navigation.push('Detail', { id, interested, style });
+    }
+
     render() {
-        const { topshow } = this.props;
-        if (Object.keys(topshow).length === 0) return null;
+        const { show } = this.props;
 
-        const { wapper, imageStyle, showCard, boderTime, showTime, showInfo, showImp, showPrice,
-            showDate, showMonth, showName, showPlace, startIcon, startIconFill, boderPrice } = styles;
-
+        const { showCard, imageStyle, boderTime, showDate, showMonth, showTime, showName, showPlace, showImp,
+            boderPrice, showPrice, startIcon, startIconFill, showInfo } = styles;
         return (
-            <View style={wapper}>
-                <TouchableOpacity style={showCard} onPress={() => this.goToDetail(topshow.id, this.state.isInterested, 1)}>
-                    <ImageBackground source={{ uri: `${url}${topshow.banners[0]}` }} style={imageStyle}>
+            <View style={showCard}>
+                <TouchableOpacity onPress={() => this.goToDetail(show.id, this.state.isInterested, 1)}>
+                    <ImageBackground source={{ uri: `${url}${show.banners[0]}` }} style={imageStyle}>
                         <View style={boderTime}>
-                            <Text style={showDate}>{this.parseDate(topshow.time)[2]}</Text>
-                            <Text style={showMonth}>{this.parseDate(topshow.time)[1]}</Text>
+                            <Text style={showDate}>{this.parseDate(show.time)[2]}</Text>
+                            <Text style={showMonth}>{this.parseDate(show.time)[1]}</Text>
                         </View>
                     </ImageBackground>
                     <View style={showInfo}>
-                        <Text style={showTime}>{this.parseDate(topshow.time)[3]}:{this.parseDate(topshow.time)[4]}</Text>
-                        <Text style={showName}>{topshow.name}</Text>
-                        <Text style={showPlace}>{topshow.place}</Text>
-                        <View style={showImp}>
-                            <View style={boderPrice}>
-                                <Text style={showPrice}>{topshow.price}</Text>
-                            </View>
-                            <TouchableOpacity onPress={() => this.onSendShow()}>
-                                {this.state.isInterested === '1' ?
-                                    <Image source={icStarFill} style={startIconFill} />
-                                    :
-                                    <Image source={icStar} style={startIcon} />
-                                }
-                            </TouchableOpacity>
-                        </View>
+                        <Text style={showTime}>{this.parseDate(show.time)[3]}:{this.parseDate(show.time)[4]}</Text>
+                        <Text numberOfLines={2} style={showName}>{show.name}</Text>
+                        <Text numberOfLines={2} style={showPlace}>{show.place}</Text>
                     </View>
                 </TouchableOpacity>
+
+                <View style={showImp}>
+                    <View style={boderPrice}>
+                        <Text style={showPrice}>{show.price}</Text>
+                    </View>
+                    <TouchableOpacity onPress={() => this.onSendShow()}>
+                        {this.state.isInterested === '1' ?
+                            <Image source={icStarFill} style={startIconFill} />
+                            :
+                            <Image source={icStar} style={startIcon} />
+                        }
+                    </TouchableOpacity>
+                </View>
             </View>
         );
     }
 }
+
 
 const styles = StyleSheet.create({
     wapper: {
@@ -102,11 +100,19 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     imageStyle: {
-        height: (width - (paddingValue * 6)) / 2,
+        width: (width - (paddingValue * 6)) / 2,
+        height: (width - (paddingValue * 6)) / 2.6,
         borderRadius: 5,
         overflow: 'hidden',
     },
+    body: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        flexWrap: 'wrap',
+        padding: 3,
+    },
     showCard: {
+        width: (width - (paddingValue * 6)) / 2,
         elevation: 5,
         backgroundColor: '#FFF'
     },
@@ -118,67 +124,68 @@ const styles = StyleSheet.create({
         bottom: 0, // position where you want
         left: 0,
         backgroundColor: 'rgba(40,40,40,0.6)',
-        margin: 10,
+        margin: 5,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 15,
+        paddingHorizontal: 10,
     },
     showDate: {
         color: '#fff',
-        fontSize: 23,
+        fontSize: 20,
         fontWeight: 'bold',
     },
     showMonth: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: 12,
     },
     showInfo: {
-        paddingTop: 6,
-        paddingLeft: 15,
+        paddingTop: 4,
+        paddingLeft: 10,
     },
     showTime: {
         color: '#FF1F1F',
         fontWeight: 'bold',
-        fontSize: 14,
+        fontSize: 12,
     },
     showName: {
         color: '#000',
         fontWeight: 'bold',
-        fontSize: 18
+        fontSize: 14
     },
     showPlace: {
         color: '#6E6E6E',
-        fontSize: 14
+        fontSize: 12
     },
     showImp: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingVertical: 6
+        paddingVertical: 4,
+        paddingLeft: 10,
     },
     showPrice: {
         color: '#FF1F1F',
         fontWeight: 'bold',
-        fontSize: 14,
+        fontSize: 12,
     },
     boderPrice: {
         borderWidth: 1,
         borderColor: '#A0A0A0',
         borderRadius: 5,
         flex: 1,
-        paddingVertical: 6,
+        paddingVertical: 5,
         justifyContent: 'center',
         alignItems: 'center',
     },
     startIcon: {
-        width: 20,
-        height: 20,
-        marginHorizontal: 14
+        width: 18,
+        height: 18,
+        marginHorizontal: 10
     },
     startIconFill: {
-        width: 20,
-        height: 20,
-        marginHorizontal: 14,
+        width: 18,
+        height: 18,
+        marginHorizontal: 10,
         tintColor: 'red'
     }
 });

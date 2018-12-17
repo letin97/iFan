@@ -11,9 +11,11 @@ import NavBar from './navigation/NavBar';
 import SearchScreen from './screens/search/Search';
 import SearchMapScreen from './screens/search/SearchMap';
 import AuthenticationScreen from './screens/authentication/Authentication';
+import PersonalScreen from './screens/personal/Personal';
+import ChangeInfoScreen from './screens/changeInfo/ChangeInfo';
 
-import ListShow from './screens/interest/ListShow';
-import ListSinger from './screens/interest/ListSinger';
+import ListUserShowScreen from './screens/interest/ListUserShow';
+import ListUserSingerScreen from './screens/interest/ListUserSinger';
 
 import icHome from './assets/icons/home.png';
 import icSchedule from './assets/icons/schedule.png';
@@ -39,9 +41,15 @@ const HomeStack = createStackNavigator({
     },
     Authentication: {
         screen: AuthenticationScreen
+    },
+    Personal: {
+        screen: PersonalScreen
+    },
+    ChangeInfo: {
+        screen: ChangeInfoScreen
     }
 }, {
-        initialRouteName: 'Home',
+        initialRouteName: 'Authentication',
         transitionConfig: transition,
         navigationOptions: ({ navigation, screenProps }) => ({
             header: (headerProps) => (
@@ -55,11 +63,11 @@ const InterestStack = createStackNavigator({
     Interest: {
         screen: InterestScreen
     },
-    ListShow: {
-        screen: ListShow
+    ListUserShow: {
+        screen: ListUserShowScreen
     },
-    ListSinger: {
-        screen: ListSinger
+    ListUserSinger: {
+        screen: ListUserSingerScreen
     },
 }, {
         initialRouteName: 'Interest',

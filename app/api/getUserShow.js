@@ -1,5 +1,5 @@
 const getUserShow = (token) => (
-    fetch(`http://192.168.1.4/ifan/user_show.php`, //eslint-disable-line
+    fetch(`http://ifanapp.000webhostapp.com/ifan/user_show.php`, //eslint-disable-line
     {
         method: 'POST',
         headers: {
@@ -8,7 +8,7 @@ const getUserShow = (token) => (
         },
         body: JSON.stringify({ token })
     })
-    .then(res => res.text())
+    .then(res => res.json())
 );
 
 export default getUserShow;

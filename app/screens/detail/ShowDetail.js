@@ -5,6 +5,7 @@ import {
     TouchableOpacity
 } from 'react-native';
 
+
 import ScrollSinger from './ScrollSinger';
 import Map from './Map';
 import Information from './Infomation';
@@ -12,10 +13,10 @@ import SwiperShow from './SwiperShow';
 
 import getShowDetail from '../../api/getShowDetail';
 import getSingerShow from '../../api/getSingerShow';
-import getUserShow from '../../api/getUserShow';
 
 import sendShow from '../../api/sendShow';
 import getToken from '../../api/getToken';
+import global from '../../global';
 
 import icStar from '../../assets/icons/star.png';
 import icStarFill from '../../assets/icons/star-fill.png';
@@ -35,46 +36,61 @@ export default class ShowDetail extends Component {
         this.state = {
             show: {},
             singers: [],
-            userShow: [],
-            isInterested: false
+            isInterested: '0',
+            style: ''
         };
     }
 
-    componentDidMount() {
+    componentWillMount() {
         const { navigation } = this.props;
         const id = navigation.getParam('id', 'NO-ID');
+        const interested = navigation.getParam('interested', '0');
+        const style = navigation.getParam('style', '0');
+        this.setState({ isInterested: interested, style });
 
         getShowDetail(id)
-        .then(responJSON => {
-            const { show } = responJSON;
-            this.setState({ show });
-        })
-        .catch(err => console.log(err));
+            .then(responJSON => {
+                const { show } = responJSON;
+                this.setState({ show });
+            })
+            .catch(err => console.log(err));
 
         getSingerShow(id)
-        .then(responJSON => {
-            const { singers } = responJSON;
-            this.setState({ singers });
-        })
-        .catch(err => console.log(err));
-
-        getToken()
-        .then(token => getUserShow(token))
-        .then(responJSON => this.setState({ userShow: responJSON }))
-        .catch(err => console.log(err)); 
+            .then(responJSON => {
+                const { singers } = responJSON;
+                this.setState({ singers });
+            })
+            .catch(err => console.log(err));
     }
 
-    async onSendShow() {
-        try {
-            const token = await getToken();
-            sendShow(token, this.state.show);
-        } catch (e) {
-            console.log(e);
+    onSendShow() {
+        if (this.state.isInterested === '1') {
+            this.setState({ isInterested: '0' }, () => {
+                getToken()
+                    .then(token => sendShow(token, this.state.show, this.state.isInterested)
+                        .then(rp => {
+                            global.refreshGrid();
+                            if (this.state.style === 2) global.refreshList();
+                        })
+                    )
+                    .catch(err => console.log(err));
+            });
+        } else {
+            this.setState({ isInterested: '1' }, () => {
+                getToken()
+                    .then(token => sendShow(token, this.state.show, this.state.isInterested)
+                        .then(rp => {
+                            global.refreshGrid();
+                            if (this.state.style === 2) global.refreshList();
+                        })
+                    )
+                    .catch(err => console.log(err));
+            });
         }
     }
-    
+
     parseDate(input) {
-        const parts = input.trim().replace(/ +(?= )/g,'').split(/[\s-\/:]/);
+        const parts = input.trim().replace(/ +(?= )/g, '').split(/[\s-\/:]/);
         return parts;
     }
 
@@ -83,11 +99,11 @@ export default class ShowDetail extends Component {
         if (Object.keys(show).length === 0) return null;
 
         const { wapper, imageStyle, showCard, boderTime, showTime, showInfo, showFullDate, showPrice,
-            showDate, showMonth, showName, showPlace, icStyle1, icStyle2, boderPrice, icInfo } = styles;
-        
+            showDate, showMonth, showName, showPlace, icStyle1, icStyle1Fill, icStyle2, boderPrice, icInfo, icInfoFill } = styles;
+
         return (
             <ScrollView style={showCard}>
-                <Image source={{ uri: `${url}${show.banners[0]}` }}style={imageStyle} />
+                <Image source={{ uri: `${url}${show.banners[0]}` }} style={imageStyle} />
                 <View style={wapper}>
                     <View style={showInfo}>
                         <View style={{ flexDirection: 'row' }}>
@@ -109,9 +125,18 @@ export default class ShowDetail extends Component {
                         </View>
 
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 10 }}>
-                            <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => this.onSendShow()}>
-                                <Image source={icStar} style={icStyle1} />
-                                <Text style={icInfo}>Quan tâm</Text>
+                            <TouchableOpacity onPress={() => this.onSendShow()}>
+                                {this.state.isInterested === '1' ?
+                                    <View style={{ alignItems: 'center' }} >
+                                        <Image source={icStarFill} style={icStyle1Fill} />
+                                        <Text style={icInfoFill}>Quan tâm</Text>
+                                    </View>
+                                    :
+                                    <View style={{ alignItems: 'center' }} >
+                                        <Image source={icStar} style={icStyle1} />
+                                        <Text style={icInfo}>Quan tâm</Text>
+                                    </View>
+                                }
                             </TouchableOpacity>
                             <View style={{ alignItems: 'center' }}>
                                 <Image source={icAttend} style={icStyle1} />
@@ -236,10 +261,21 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
     },
+    icInfoFill: {
+        color: 'red',
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
     icStyle1: {
         width: 25,
         height: 25,
         marginVertical: 5,
+    },
+    icStyle1Fill: {
+        width: 25,
+        height: 25,
+        marginVertical: 5,
+        tintColor: 'red'
     },
     icStyle2: {
         width: 18,

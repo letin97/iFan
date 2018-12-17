@@ -1,5 +1,5 @@
 const checkLogin = (token) => (
-    fetch(`http://192.168.1.4/api/check_login.php`, //eslint-disable-line
+    fetch(`http://ifanapp.000webhostapp.com/ifan/check_login.php`, //eslint-disable-line
     {
         method: 'POST',
         headers: {

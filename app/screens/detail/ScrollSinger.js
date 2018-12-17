@@ -6,7 +6,7 @@ const url = 'http://192.168.1.4/ifan/images/singer/';
 export default class ScrollSinger extends Component {
 
     goToDetail(id) {
-        this.props.navigation.push('Singer', { id });
+        this.props.navigation.replace('Singer', { id });
     }
 
     render() {

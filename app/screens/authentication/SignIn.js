@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import {
     View, TextInput, TouchableOpacity,
-    Text, StyleSheet
+    Text, StyleSheet, Alert
 } from 'react-native';
 
 import singnIn from '../../api/signIn';
 import saveToken from '../../api/saveToken';
-import getToken from '../../api/getToken';
 
 export default class SignIn extends Component {
 
@@ -18,12 +17,26 @@ export default class SignIn extends Component {
         };
     }
 
+    onFail() {
+        Alert.alert(
+            'Thông báo',
+            'Email hoặc mật khẩu sai',
+            [
+                { text: 'OK' },
+            ],
+            { cancelable: false }
+        );
+    }
+
     onSignIn() {
         const { email, password } = this.state;
         singnIn(email, password)
         .then(res => {
-            saveToken(res.token);
-            getToken().then(token => console.log(token));
+            if (res.token === '') this.onFail();
+            else {
+                saveToken(res.token);
+                this.props.navigation.replace('Home');
+            }
         })
         .catch(err => console.log(err));  
     }
@@ -65,6 +78,8 @@ const styles = StyleSheet.create({
         fontSize: 15,
         marginBottom: 10,
         borderRadius: 20,
+        borderColor: '#FF1F1F',
+        borderWidth: 1
     },
     bigButton: {
         height: 40,
@@ -72,7 +87,8 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         borderWidth: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: '#FF1F1F'
     },
     butonText: {
         color: '#FFF',

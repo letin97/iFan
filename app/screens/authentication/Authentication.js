@@ -4,11 +4,19 @@ import {
     View, TouchableOpacity, Image, StyleSheet,
 } from 'react-native';
 
+import getToken from '../../api/getToken';
+import checkLogin from '../../api/checkLogin';
 
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 
+import imglogo from './../../assets/icons/logo.png';
+
 export default class Authentication extends Component {
+
+    static navigationOptions = {
+        header: null
+    };
 
     constructor(props) {
         super(props);
@@ -17,9 +25,13 @@ export default class Authentication extends Component {
         };
     }
 
-    backToMain() {
-        const { navigator } = this.props;
-        navigator.pop();
+    componentWillMount() {
+        getToken()
+            .then(token => checkLogin(token))
+            .then(res => {
+                this.props.navigation.replace('Home');
+            })
+            .catch(err => console.log('ERROR LOGIN', err));
     }
 
     signIn() {
@@ -35,10 +47,14 @@ export default class Authentication extends Component {
             rowButton, buttonSignIn, buttonSignUp, activeStyle,
             inActiveStyle } = styles;
 
-        const mainJSX = this.state.isSignIn ? <SignIn backToMain={this.backToMain.bind(this)} /> : <SignUp signIn={this.signIn.bind(this)} />;
+        const mainJSX = this.state.isSignIn ? <SignIn navigation={this.props.navigation} /> : <SignUp navigation={this.props.navigation} />;
 
         return (
             <View style={wrapper}>
+
+                <View style={{ alignItems: 'center' }}>
+                    <Image source={imglogo} style={imageStyle} />
+                </View>
 
                 {mainJSX}
 
@@ -54,7 +70,6 @@ export default class Authentication extends Component {
                         </Text>
                     </TouchableOpacity>
                 </View>
-
             </View>
         );
     }
@@ -63,13 +78,13 @@ export default class Authentication extends Component {
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1,
-        backgroundColor: '#00B6BC',
+        backgroundColor: '#FFF',
         padding: 20,
         justifyContent: 'space-between'
     },
     row: { flexDirection: 'row', justifyContent: 'space-between' },
     textStyle: { color: '#FFF', fontSize: 22 },
-    imageStyle: { height: 25, width: 25 },
+    imageStyle: { height: 150, width: 150 },
     rowButton: { flexDirection: 'row' },
     buttonSignIn: {
         backgroundColor: '#FFF',
@@ -77,8 +92,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingVertical: 15,
         marginRight: 1,
-        borderTopLeftRadius: 20,
-        borderBottomLeftRadius: 20
     },
     buttonSignUp: {
         backgroundColor: '#FFF',
@@ -86,11 +99,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingVertical: 15,
         marginLeft: 1,
-        borderTopRightRadius: 20,
-        borderBottomRightRadius: 20
     },
     activeStyle: {
-        color: '#00B6BC'
+        color: '#FF1F1F'
     },
     inActiveStyle: {
         color: '#A6A6A6'

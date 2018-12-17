@@ -10,7 +10,13 @@ import LinearGradient from 'react-native-linear-gradient';
 import getSingerDetail from '../../api/getSingerDetail';
 import getShowSinger from '../../api/getShowSinger';
 
-import ListShow from '../interest/ListShow';
+import getUserShow from '../../api/getUserShow';
+import getUserSinger from '../../api/getUserSinger';
+import getToken from '../../api/getToken';
+import sendSinger from '../../api/sendSinger';
+
+
+import ListShow from './ListShow';
 
 const urlbanner = 'http://192.168.1.4/ifan/banners/singer/';
 const urlimage = 'http://192.168.1.4/ifan/images/singer/';
@@ -20,28 +26,76 @@ export default class Singer extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            loading: true,
             singer: {},
-            shows: []
+            shows: [],
+            userShow: [],
+            isInterested: '0',
         };
     }
 
-    componentDidMount() {
+    componentWillMount() {
         const { navigation } = this.props;
         const id = navigation.getParam('id', 'NO-ID');
 
         getSingerDetail(id)
-        .then(responJSON => {
-            const { singer } = responJSON;
-            this.setState({ singer });
-        })
-        .catch(err => console.log(err));
+            .then(responJSON => {
+                const { singer } = responJSON;
+                this.setState({ singer });
+            })
+            .catch(err => console.log(err));
 
         getShowSinger(id)
-        .then(responJSON => {
-            const { shows } = responJSON;
-            this.setState({ shows });
-        })
-        .catch(err => console.log(err));
+            .then(responJSON => {
+                const { shows } = responJSON;
+                this.setState({ shows });
+            })
+            .catch(err => console.log(err));
+
+        getToken()
+            .then(token => getUserSinger(token))
+            .then(responJSON => {
+                for (let i = 0; i < responJSON.length; i++) {
+                    if (responJSON[i].id_singer === id) {
+                        this.setState({ isInterested: responJSON[i].interested });
+                        break;
+                    }
+                }
+            })
+            .catch(err => console.log(err));
+
+        getToken()
+            .then(token => getUserShow(token))
+            .then(responJSON => {
+                this.setState({ userShow: responJSON }, () => this.setState({ loading: false }));
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    onSendSinger() {
+        if (this.state.isInterested === '1') {
+            this.setState({ isInterested: '0' }, () => {
+                getToken()
+                    .then(token => sendSinger(token, this.state.singer, this.state.isInterested)
+                        .then(rp => {
+
+                        })
+                    )
+                    .catch(err => console.log(err));
+            });
+        } else {
+            this.setState({ isInterested: '1' }, () => {
+                getToken()
+                    .then(token => sendSinger(token, this.state.singer, this.state.isInterested)
+                        .then(rp => {
+
+                        })
+                    )
+                    .catch(err => console.log(err));
+            });
+        }
     }
 
     renderViewMore(onPress) {
@@ -83,11 +137,18 @@ export default class Singer extends Component {
                                         <Text style={styles.name}>{singer.name}</Text>
                                     </View>
 
-                                    <View style={{ justifyContent: 'flex-end' }}>
-                                        <Text style={styles.textInterest}>+ Quan tâm</Text>
-                                    </View>
+                                    <TouchableOpacity onPress={() => this.onSendSinger()}>
+                                        {this.state.isInterested === '1' ?
+                                            <View style={{ justifyContent: 'flex-end' }}>
+                                                <Text style={styles.textInterest}>+ Quan tâm</Text>
+                                            </View>
+                                            :
+                                            <View style={{ justifyContent: 'flex-end' }}>
+                                                <Text style={styles.textUnInterest}>+ Quan tâm</Text>
+                                            </View>
+                                        }
+                                    </TouchableOpacity>
                                 </View>
-
                             </View>
                         </LinearGradient>
                     </ImageBackground>
@@ -107,8 +168,9 @@ export default class Singer extends Component {
                         <Text>{singer.description}</Text>
                     </ViewMoreText>
                 </View>
-
-                <ListShow navigation={this.props.navigation} shows={this.state.shows} />
+                {this.state.loading === false ?
+                    <ListShow navigation={this.props.navigation} shows={this.state.shows} userShow={this.state.userShow} />
+                    : null}
             </ScrollView>
         );
     }
@@ -170,6 +232,16 @@ const styles = StyleSheet.create({
         paddingVertical: 2,
         backgroundColor: '#FF1F1F',
         borderColor: '#FF1F1F',
+        color: '#fff'
+    },
+    textUnInterest: {
+        fontSize: 12,
+        borderRadius: 3,
+        borderWidth: 1,
+        paddingHorizontal: 5,
+        paddingVertical: 2,
+        backgroundColor: '#3A3A3A',
+        borderColor: '#3A3A3A',
         color: '#fff'
     }
 });

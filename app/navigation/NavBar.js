@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Text, View, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { StackActions, NavigationActions } from 'react-navigation';
 
-import icLogo from '../assets/icons/logo.png';
+
+import icUser from '../assets/icons/user.png';
 import icBack from '../assets/icons/back_white.png';
 import icSearch from '../assets/icons/search.png';
 
@@ -19,11 +21,20 @@ export default class NavBar extends Component {
             : undefined;
 
         const renderRightContent = () => {
-            if (this.props.navigation.state.routeName !== 'Search' && this.props.navigation.state.routeName !== 'SearchMap') {
+            const resetAction = StackActions.reset({
+                index: 1,
+                actions: [
+                  NavigationActions.navigate({ routeName: 'Home' }),
+                  NavigationActions.navigate({ routeName: 'Search' }),
+                ],
+              });
+                            
+            if (this.props.navigation.state.routeName !== 'Search' && this.props.navigation.state.routeName !== 'SearchMap'
+            && this.props.navigation.state.routeName !== 'Personal' && this.props.navigation.state.routeName !== 'ChangeInfo') {
                 return (
                     <View>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Search')}>
-                            <Image source={icSearch} style={styles.icBack} />
+                        <TouchableOpacity onPress={() => this.props.navigation.dispatch(resetAction)}>
+                            <Image source={icSearch} style={styles.icSearch} />
                         </TouchableOpacity>
                     </View>
                 );
@@ -56,8 +67,8 @@ export default class NavBar extends Component {
 
             return (
                 <View>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Authentication')}>
-                        <Image source={icLogo} style={styles.icStyle} />
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Personal')}>
+                        <Image source={icUser} style={styles.icStyle} />
                     </TouchableOpacity>
                 </View>
             );
@@ -102,13 +113,18 @@ const styles = StyleSheet.create({
         //zIndex: 100
     },
     icStyle: {
-        width: 50,
-        height: 50,
+        width: 30,
+        height: 30,
+        marginLeft: 3,
     },
     icBack: {
         width: 30,
         height: 30,
         tintColor: '#000'
+    },
+    icSearch: {
+        width: 30,
+        height: 30,
     },
     text: {
         fontSize: 22,
