@@ -10,7 +10,7 @@ import InterestScreen from './screens/interest/Interest';
 import NavBar from './navigation/NavBar';
 import SearchScreen from './screens/search/Search';
 import SearchMapScreen from './screens/search/SearchMap';
-import AuthenticationScreen from './screens/authentication/Authentication';
+import ContactScreen from './screens/personal/Contact';
 import PersonalScreen from './screens/personal/Personal';
 import ChangeInfoScreen from './screens/changeInfo/ChangeInfo';
 
@@ -39,14 +39,14 @@ const HomeStack = createStackNavigator({
     SearchMap: {
         screen: SearchMapScreen
     },
-    Authentication: {
-        screen: AuthenticationScreen
-    },
     Personal: {
         screen: PersonalScreen
     },
     ChangeInfo: {
         screen: ChangeInfoScreen
+    },
+    Contact: {
+        screen: ContactScreen
     }
 }, {
         initialRouteName: 'Home',

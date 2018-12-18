@@ -30,7 +30,8 @@ export default class NavBar extends Component {
               });
                             
             if (this.props.navigation.state.routeName !== 'Search' && this.props.navigation.state.routeName !== 'SearchMap'
-            && this.props.navigation.state.routeName !== 'Personal' && this.props.navigation.state.routeName !== 'ChangeInfo') {
+            && this.props.navigation.state.routeName !== 'Personal' && this.props.navigation.state.routeName !== 'ChangeInfo'
+            && this.props.navigation.state.routeName !== 'Contact') {
                 return (
                     <View>
                         <TouchableOpacity onPress={() => this.props.navigation.dispatch(resetAction)}>

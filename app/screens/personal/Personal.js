@@ -37,6 +37,10 @@ export default class Personal extends Component {
         this.props.navigation.push('ChangeInfo', { user });
     }
 
+    goToContact() {
+        this.props.navigation.push('Contact');
+    }
+
     render() {
         return (
             <ScrollView style={styles.container}>
@@ -52,8 +56,8 @@ export default class Personal extends Component {
                         <Text style={styles.textStyle}>Thay đổi thông tin</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity>
-                        <Text style={styles.textStyle}>Chính sách</Text>
+                    <TouchableOpacity onPress={() => this.goToContact()}>
+                        <Text style={styles.textStyle}>Liên hệ</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={this.onSingOut.bind(this)}>

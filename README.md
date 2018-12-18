@@ -6,17 +6,17 @@ Theo dõi các show diễn của các ca sĩ, nghệ sĩ yêu thích.
 ## Nội dung
 1. [Chức năng](#chức-năng)
 
-   1. [Đăng nhập / Đăng kí](#đăng-nhập-đăng-kí)
+   1. [Đăng nhập / Đăng kí](#đăng-nhập-/-đăng-kí)
 
    1. [Xem show diễn hot](#xem-show-diễn-hot)
    
-   1. [Xem các show các ca sĩ yêu thích](#xem-các-show-các-ca-sĩ-yêu-thích)
+   1. [Xem show ca sĩ yêu thích](#xem-show-ca-sĩ-yêu-thích)
 
    1. [Tìm kiếm show diễn](#tìm-kiếm-show-diễn)
    
    1. [Xem lịch diễn các show trong tháng](#xem-lịch-diễn-các-show-trong-tháng)
 
-   1. [Xem show diễn, ca sĩ yêu thích](#xem-show-diễn-ca-sĩ-yêu-thích)
+   1. [Lưu show diễn, ca sĩ yêu thích](#xem-show-diễn,-ca-sĩ-yêu-thích)
 
    1. [Xem thông tin tài khoản](#xem-thông-tin-tài-khoản)
    
@@ -49,7 +49,7 @@ Theo dõi các show diễn của các ca sĩ, nghệ sĩ yêu thích.
    <img src="screenshots/home.png" height = "480" width="270"> <img src="screenshots/show.png" height = "480" width="270"> <img src="screenshots/show1.png" height = "480" width="270">
    </p>
     
-### Xem các show các ca sĩ yêu thích
+### Xem show ca sĩ yêu thích
    * Thông tin ca sĩ
   
    * Các show diễn của ca sĩ
@@ -73,10 +73,10 @@ Theo dõi các show diễn của các ca sĩ, nghệ sĩ yêu thích.
    <img src="screenshots/schedule.png" height = "480" width="270">
    </p>
 
-### Xem show diễn, ca sĩ yêu thích
+### Lưu show diễn, ca sĩ yêu thích
    * Xem show quan tâm
   
-   * Xem show ca sĩ yêu thích
+   * Xem ca sĩ yêu thích
    
    <p align="center">
    <img src="screenshots/interest.png" height = "480" width="270"> <img src="screenshots/list show 1.png" height = "480" width="270"> <img src="screenshots/list singer.png" height = "480" width="270">
