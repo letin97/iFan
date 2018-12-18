@@ -20,7 +20,7 @@ export default class ListUserSinger extends Component {
         getToken()
             .then(token => getUserSinger(token))
             .then(responJSON => {
-                if (responJSON !== null) this.setState({ userShow: responJSON }, () => this.setState({ loading: false }));
+                if (responJSON !== null) this.setState({ userSinger: responJSON }, () => this.setState({ loading: false }));
                 else this.setState(({ loading: false }));
             })
             .catch(err => {
