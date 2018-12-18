@@ -32,7 +32,8 @@ export default class SearchMap extends Component {
         getToken()
             .then(token => getUserShow(token))
             .then(responJSON => {
-                this.setState({ userShow: responJSON }, () => this.setState({ loading: false }));
+                if (responJSON !== null) this.setState({ userShow: responJSON }, () => this.setState({ loading: false }));
+                else this.setState(({ loading: false }));
             })
             .catch(err => {
                 console.log(err);

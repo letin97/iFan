@@ -23,6 +23,7 @@ export default class ShowCard extends Component {
     componentWillMount() {
         const { show } = this.props;
         const { userShow } = this.props;
+        if (userShow === null) return;
         for (let i = 0; i < userShow.length; i++) {
             if (userShow[i].id_show === show.id) {
                 this.setState({ isInterested: userShow[i].interested });

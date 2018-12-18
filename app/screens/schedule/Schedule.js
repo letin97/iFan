@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
         paddingRight: 15
     },
     timeContainer: {
-        width: 35,
+        width: 40,
         justifyContent: 'center',
     },
     time: {

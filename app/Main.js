@@ -49,7 +49,7 @@ const HomeStack = createStackNavigator({
         screen: ChangeInfoScreen
     }
 }, {
-        initialRouteName: 'Authentication',
+        initialRouteName: 'Home',
         transitionConfig: transition,
         navigationOptions: ({ navigation, screenProps }) => ({
             header: (headerProps) => (

@@ -30,7 +30,7 @@ export default class Personal extends Component {
 
     onSingOut() {
         saveToken('');
-        this.props.navigation.replace('Authentication');
+        this.props.navigation.navigate('SignedOut');
     }
 
     goToChangeInfo(user) {

@@ -25,14 +25,14 @@ export default class Authentication extends Component {
         };
     }
 
-    componentWillMount() {
-        getToken()
-            .then(token => checkLogin(token))
-            .then(res => {
-                this.props.navigation.replace('Home');
-            })
-            .catch(err => console.log('ERROR LOGIN', err));
-    }
+    // componentWillMount() {
+    //     getToken()
+    //         .then(token => checkLogin(token))
+    //         .then(res => {
+    //             this.props.navigation.replace('Home');
+    //         })
+    //         .catch(err => console.log('ERROR LOGIN', err));
+    // }
 
     signIn() {
         this.setState({ isSignIn: true });
@@ -47,7 +47,7 @@ export default class Authentication extends Component {
             rowButton, buttonSignIn, buttonSignUp, activeStyle,
             inActiveStyle } = styles;
 
-        const mainJSX = this.state.isSignIn ? <SignIn navigation={this.props.navigation} /> : <SignUp navigation={this.props.navigation} />;
+        const mainJSX = this.state.isSignIn ? <SignIn navigation={this.props.navigation} /> : <SignUp signIn={this.signIn.bind(this)} />;
 
         return (
             <View style={wrapper}>

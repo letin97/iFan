@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image } from 'react-native';
 import Swiper from 'react-native-swiper';
 
+import img1 from '../../assets/icons/image001.jpg';
+import img2 from '../../assets/icons/image002.jpg';
+
 export default class SwiperShow extends Component {
 
     render() {

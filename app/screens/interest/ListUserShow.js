@@ -21,12 +21,11 @@ export default class ListUserShow extends Component {
         getToken()
             .then(token => getUserShow(token))
             .then(responJSON => {
-                this.setState({ userShow: responJSON });
+                if (responJSON !== null) this.setState({ userShow: responJSON }, () => this.setState({ loading: false }));
+                else this.setState(({ loading: false }));
             })
-            .then(this.setState({ loading: false }))
             .catch(err => {
                 console.log(err);
-                this.setState({ loading: false });
             });
     }
 

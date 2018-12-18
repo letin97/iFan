@@ -35,7 +35,7 @@ export default class SignIn extends Component {
             if (res.token === '') this.onFail();
             else {
                 saveToken(res.token);
-                this.props.navigation.replace('Home');
+                this.props.navigation.navigate('SignedIn');
             }
         })
         .catch(err => console.log(err));  
