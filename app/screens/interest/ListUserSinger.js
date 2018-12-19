@@ -4,7 +4,7 @@ import { View, ListView, Text, Image, StyleSheet, TouchableOpacity } from 'react
 import getUserSinger from '../../api/getUserSinger';
 import getToken from '../../api/getToken';
 
-const url = 'http://192.168.1.4/ifan/images/singer/';
+const url = 'http://ifanapp.000webhostapp.com/ifan/images/singer/';
 
 export default class ListUserSinger extends Component {
 

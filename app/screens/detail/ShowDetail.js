@@ -27,7 +27,7 @@ import icTime from '../../assets/icons/time.png';
 import icTicket from '../../assets/icons/ticket.png';
 
 const width = Dimensions.get('window').width;
-const url = 'http://192.168.1.4/ifan/banners/show/';
+const url = 'http://ifanapp.000webhostapp.com/ifan/banners/show/';
 
 export default class ShowDetail extends Component {
 

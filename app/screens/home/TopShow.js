@@ -10,7 +10,7 @@ import sendShow from '../../api/sendShow';
 import icStar from '../../assets/icons/star.png';
 import icStarFill from '../../assets/icons/star-fill.png';
 
-const url = 'http://192.168.1.4/ifan/banners/show/';
+const url = 'http://ifanapp.000webhostapp.com/ifan/banners/show/';
 const paddingValue = 5;
 const width = Dimensions.get('window').width;
 

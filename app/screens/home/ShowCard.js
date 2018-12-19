@@ -9,7 +9,7 @@ import icStar from '../../assets/icons/star.png';
 import icLocation from '../../assets/icons/local.png';
 import icStarFill from '../../assets/icons/star-fill.png';
 
-const url = 'http://192.168.1.4/ifan/banners/show/';
+const url = 'http://ifanapp.000webhostapp.com/ifan/banners/show/';
 
 export default class ShowCard extends Component {
 

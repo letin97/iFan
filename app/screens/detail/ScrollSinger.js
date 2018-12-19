@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 
-const url = 'http://192.168.1.4/ifan/images/singer/';
+const url = 'http://ifanapp.000webhostapp.com/ifan/images/singer/';
 
 export default class ScrollSinger extends Component {
 

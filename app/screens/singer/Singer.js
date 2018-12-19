@@ -18,8 +18,8 @@ import sendSinger from '../../api/sendSinger';
 
 import ListShow from './ListShow';
 
-const urlbanner = 'http://192.168.1.4/ifan/banners/singer/';
-const urlimage = 'http://192.168.1.4/ifan/images/singer/';
+const urlbanner = 'http://ifanapp.000webhostapp.com/ifan/banners/singer/';
+const urlimage = 'http://ifanapp.000webhostapp.com/ifan/images/singer/';
 
 export default class Singer extends Component {
 
