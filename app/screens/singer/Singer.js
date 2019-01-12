@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
     Text, View, StyleSheet, ScrollView, Image,
-    TouchableOpacity, ImageBackground
+    TouchableOpacity, ImageBackground, ActivityIndicator
 } from 'react-native';
 
 import ViewMoreText from 'react-native-view-more-text';
@@ -23,20 +23,23 @@ const urlimage = 'http://ifanapp.000webhostapp.com/ifan/images/singer/';
 
 export default class Singer extends Component {
 
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
-            loading: true,
             singer: {},
             shows: [],
-            userShow: [],
+            userShow: null,
             isInterested: '0',
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         const { navigation } = this.props;
         const id = navigation.getParam('id', 'NO-ID');
+
+        this._isMounted = true;
 
         getSingerDetail(id)
             .then(responJSON => {
@@ -67,11 +70,18 @@ export default class Singer extends Component {
         getToken()
             .then(token => getUserShow(token))
             .then(responJSON => {
-                this.setState({ userShow: responJSON }, () => this.setState({ loading: false }));
+                if (this._isMounted) {
+                    if (responJSON !== null) this.setState({ userShow: responJSON });
+                    else this.setState({ userShow: [] });
+                }
             })
             .catch(err => {
                 console.log(err);
             });
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     onSendSinger() {
@@ -168,9 +178,13 @@ export default class Singer extends Component {
                         <Text>{singer.description}</Text>
                     </ViewMoreText>
                 </View>
-                {this.state.loading === false ?
+                {this.state.userShow !== null ?
                     <ListShow navigation={this.props.navigation} shows={this.state.shows} userShow={this.state.userShow} />
-                    : null}
+                    :
+                    <View style={{ flex: 1, justifyContent: 'center', backgroundColor: '#fff' }}>
+                        <ActivityIndicator size="large" color="#FF1F1F" />
+                    </View>
+                }
             </ScrollView>
         );
     }
@@ -224,7 +238,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 10,
     },
-    textInterest: {
+    textUnInterest: {
         fontSize: 12,
         borderRadius: 3,
         borderWidth: 1,
@@ -234,7 +248,7 @@ const styles = StyleSheet.create({
         borderColor: '#FF1F1F',
         color: '#fff'
     },
-    textUnInterest: {
+    textInterest: {
         fontSize: 12,
         borderRadius: 3,
         borderWidth: 1,

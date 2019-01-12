@@ -21,15 +21,15 @@ export default class Contact extends Component {
                     </View>
                     <View style={rowInfoContainer}>
                         <Image source={phoneIcon} style={imageStyle} />
-                        <Text style={infoText}>(+84) 038434497</Text>
+                        <Text style={infoText}>(+84) 38434497</Text>
                     </View>
                     <View style={rowInfoContainer}>
                         <Image source={mailIcon} style={imageStyle} />
-                        <Text style={infoText}>ltt@uit.edu..com</Text>
+                        <Text style={infoText}>ltt@uit.edu.com</Text>
                     </View>
                     <View style={[rowInfoContainer, { borderBottomWidth: 0 }]}>
                         <Image source={messageIcon} style={imageStyle} />
-                        <Text style={infoText}>(+84) 09877067707</Text>
+                        <Text style={infoText}>(+84) 388434497</Text>
                     </View>
                 </View>
             </View>

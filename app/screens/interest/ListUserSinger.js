@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, ListView, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, ListView, Text, Image, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 
+import icSad from '../../assets/icons/sad.png';
 import getUserSinger from '../../api/getUserSinger';
 import getToken from '../../api/getToken';
 
@@ -8,25 +9,32 @@ const url = 'http://ifanapp.000webhostapp.com/ifan/images/singer/';
 
 export default class ListUserSinger extends Component {
 
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
-            loading: true,
-            userSinger: []
+            userSinger: null
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
+        this._isMounted = true;
         getToken()
             .then(token => getUserSinger(token))
             .then(responJSON => {
-                if (responJSON !== null) this.setState({ userSinger: responJSON }, () => this.setState({ loading: false }));
-                else this.setState(({ loading: false }));
+                if (this._isMounted) {
+                    if (responJSON !== null) this.setState({ userSinger: responJSON });
+                    else this.setState({ userSinger: [] });
+                }
             })
             .catch(err => {
                 console.log(err);
-                this.setState({ loading: false });
             });
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     goToDetail(id) {
@@ -37,9 +45,18 @@ export default class ListUserSinger extends Component {
         const { userSinger } = this.state;
         const { showCard, imageStyle, name, row } = styles;
 
+        if (userSinger !== null && userSinger.length === 0) {
+            return (
+                <View style={{ flex: 1, backgroundColor: '#FFF', justifyContent: 'center', alignItems: 'center' }}>
+                    <Image source={icSad} style={{ height: 24, width: 24 }} />
+                    <Text>Hiện chưa có ca sĩ nào</Text>
+                </View>
+            );
+        }
+
         return (
             <View style={{ flex: 1, backgroundColor: '#FFF' }}>
-                {this.state.loading === false ?
+                {this.state.userSinger !== null ?
                     <ListView
                         enableEmptySections
                         dataSource={new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(userSinger)}
@@ -59,7 +76,11 @@ export default class ListUserSinger extends Component {
                             </View>
                         )}
                     />
-                    : null}
+                    :
+                    <View style={{ flex: 1, justifyContent: 'center', backgroundColor: '#fff' }}>
+                        <ActivityIndicator size="large" color="#FF1F1F" />
+                    </View>
+                }
             </View>
         );
     }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
     Text, View, StyleSheet, ScrollView, Image,
-    TouchableOpacity,
+    TouchableOpacity, ActivityIndicator,
 } from 'react-native';
 
 
@@ -12,6 +12,8 @@ import saveToken from '../../api/saveToken';
 
 export default class Personal extends Component {
 
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -19,13 +21,21 @@ export default class Personal extends Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
+        this._isMounted = true;
+
         getToken()
             .then(token => checkLogin(token))
             .then(res => {
-                this.setState({ user: res.user });
+                if (this._isMounted) {
+                    if (res.user !== null) this.setState({ user: res.user });
+                }
             })
             .catch(err => console.log('ERROR LOGIN', err));
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     onSingOut() {
@@ -44,26 +54,33 @@ export default class Personal extends Component {
     render() {
         return (
             <ScrollView style={styles.container}>
-                {this.state.user ?
-                    <View style={styles.badge}>
-                        <Image style={styles.avatar} />
-                        <Text style={styles.name}>{this.state.user.name}</Text>
+                {this.state.user !== null ?
+                    <View>
+                        <View style={styles.badge}>
+                            <Image style={styles.avatar} />
+                            <Text style={styles.name}>{this.state.user.name}</Text>
+
+                        </View>
+                        <View style={styles.separator} />
+                        <View style={{ flex: 1, justifyContent: 'center' }}>
+                            <TouchableOpacity onPress={() => this.goToChangeInfo(this.state.user)}>
+                                <Text style={styles.textStyle}>Thay đổi thông tin</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={() => this.goToContact()}>
+                                <Text style={styles.textStyle}>Liên hệ</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={this.onSingOut.bind(this)}>
+                                <Text style={styles.textStyle}>Đăng xuất</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    : null}
-                <View style={styles.separator} />
-                <View style={{ flex: 1, justifyContent: 'center' }}>
-                    <TouchableOpacity onPress={() => this.goToChangeInfo(this.state.user)}>
-                        <Text style={styles.textStyle}>Thay đổi thông tin</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => this.goToContact()}>
-                        <Text style={styles.textStyle}>Liên hệ</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={this.onSingOut.bind(this)}>
-                        <Text style={styles.textStyle}>Đăng xuất</Text>
-                    </TouchableOpacity>
-                </View>
+                    :
+                    <View style={{ flex: 1, justifyContent: 'center', backgroundColor: '#fff' }}>
+                        <ActivityIndicator size="large" color="#FF1F1F" />
+                    </View>
+                }
             </ScrollView>
         );
     }

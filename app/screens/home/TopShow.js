@@ -12,7 +12,6 @@ import icStarFill from '../../assets/icons/star-fill.png';
 
 const url = 'http://ifanapp.000webhostapp.com/ifan/banners/show/';
 const paddingValue = 5;
-const width = Dimensions.get('window').width;
 
 export default class TopShow extends Component {
 
@@ -20,7 +19,10 @@ export default class TopShow extends Component {
         super(props);
         this.state = {
             isInterested: '0',
-        };
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').height,
+        }; 
+        this.onLayout = this.onLayout.bind(this); 
     }
 
     componentWillMount() {
@@ -32,6 +34,13 @@ export default class TopShow extends Component {
                 break;
             }
         }
+    }
+
+    onLayout(e) {
+        this.setState({
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').height,
+        });
     }
 
     onSendShow() {
@@ -59,13 +68,13 @@ export default class TopShow extends Component {
         const { topshow } = this.props;
         if (Object.keys(topshow).length === 0) return null;
 
-        const { wapper, imageStyle, showCard, boderTime, showTime, showInfo, showImp, showPrice,
+        const { wapper, showCard, boderTime, showTime, showInfo, showImp, showPrice,
             showDate, showMonth, showName, showPlace, startIcon, startIconFill, boderPrice } = styles;
 
         return (
-            <View style={wapper}>
+            <View onLayout={this.onLayout} style={wapper}>
                 <TouchableOpacity style={showCard} onPress={() => this.goToDetail(topshow.id, this.state.isInterested, 1)}>
-                    <ImageBackground source={{ uri: `${url}${topshow.banners[0]}` }} style={imageStyle}>
+                    <ImageBackground source={{ uri: `${url}${topshow.banners[0]}` }} style={{ height: (this.state.width - (paddingValue * 6)) / 2, borderRadius: 5, overflow: 'hidden' }}>
                         <View style={boderTime}>
                             <Text style={showDate}>{this.parseDate(topshow.time)[2]}</Text>
                             <Text style={showMonth}>{this.parseDate(topshow.time)[1]}</Text>
@@ -100,11 +109,6 @@ const styles = StyleSheet.create({
         margin: 5,
         elevation: 5,
         justifyContent: 'space-between'
-    },
-    imageStyle: {
-        height: (width - (paddingValue * 6)) / 2,
-        borderRadius: 5,
-        overflow: 'hidden',
     },
     showCard: {
         elevation: 5,

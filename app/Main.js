@@ -82,6 +82,7 @@ export default createBottomTabNavigator({
     Home: {
         screen: HomeStack,
         navigationOptions: {
+            title: 'Nổi bật',
             tabBarIcon: ({ tintColor }) => (
                 <Image source={icHome} style={{ height: 24, width: 24, tintColor }} />
             )
@@ -90,6 +91,7 @@ export default createBottomTabNavigator({
     Schedule: {
         screen: ScheduleScreen,
         navigationOptions: {
+            title: 'Lịch',
             tabBarIcon: ({ tintColor }) => (
                 <Image source={icSchedule} style={{ height: 24, width: 24, tintColor }} />
             )
@@ -98,6 +100,7 @@ export default createBottomTabNavigator({
     Interest: {
         screen: InterestStack,
         navigationOptions: {
+            title: 'Quan tâm',
             tabBarIcon: ({ tintColor }) => (
                 <Image source={icStar} style={{ height: 24, width: 24, tintColor }} />
             )

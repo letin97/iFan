@@ -3,7 +3,7 @@ import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import {
     Text, View, StyleSheet, ImageBackground,
     TouchableOpacity, Dimensions, ScrollView,
-    TextInput
+    TextInput, ActivityIndicator
 } from 'react-native';
 
 import icSchedule from '../../assets/icons/schedule_fill.png';
@@ -17,17 +17,21 @@ const width = Dimensions.get('window').width;
 
 export default class Search extends Component {
 
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
             shows: [],
-            userShow: [],
+            userShow: null,
             key: ''
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         const key = '';
+        this._isMounted = true;
+
         searchShow(key)
             .then(responJSON => {
                 const { shows } = responJSON;
@@ -38,13 +42,18 @@ export default class Search extends Component {
         getToken()
             .then(token => getUserShow(token))
             .then(responJSON => {
-                if (responJSON !== null) this.setState({ userShow: responJSON }, () => this.setState({ loading: false }));
-                else this.setState(({ loading: false }));
+                if (this._isMounted) {
+                    if (responJSON !== null) this.setState({ userShow: responJSON });
+                    else this.setState({ userShow: [] });
+                }
             })
             .catch(err => {
                 console.log(err);
-                this.setState({ loading: false });
             });
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     onSearch() {
@@ -116,9 +125,13 @@ export default class Search extends Component {
                         </MapView>
                     </TouchableOpacity> : null}
 
-                {this.state.loading === false ?
+                {this.state.userShow !== null ?
                     <ListShow navigation={this.props.navigation} shows={this.state.shows} userShow={this.state.userShow} />
-                    : null}
+                    :
+                    <View style={{ flex: 1, justifyContent: 'center', backgroundColor: '#fff' }}>
+                        <ActivityIndicator size="large" color="#FF1F1F" />
+                    </View>
+                }
             </ScrollView >
         );
     }

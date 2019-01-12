@@ -10,7 +10,6 @@ import icStarFill from '../../assets/icons/star-fill.png';
 
 const url = 'http://ifanapp.000webhostapp.com/ifan/banners/show/';
 const paddingValue = 5;
-const width = Dimensions.get('window').width;
 
 export default class ShowCardGrid extends Component {
 
@@ -18,7 +17,10 @@ export default class ShowCardGrid extends Component {
         super(props);
         this.state = {
             isInterested: '0',
-        };  
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').height,
+        };
+        this.onLayout = this.onLayout.bind(this);
     }
 
     componentWillMount() {
@@ -31,6 +33,13 @@ export default class ShowCardGrid extends Component {
                 break;
             }
         }
+    }
+
+    onLayout(e) {
+        this.setState({
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').height,
+        });
     }
 
     onSendShow() {
@@ -57,12 +66,12 @@ export default class ShowCardGrid extends Component {
     render() {
         const { show } = this.props;
 
-        const { showCard, imageStyle, boderTime, showDate, showMonth, showTime, showName, showPlace, showImp,
+        const { boderTime, showDate, showMonth, showTime, showName, showPlace, showImp,
             boderPrice, showPrice, startIcon, startIconFill, showInfo } = styles;
         return (
-            <View style={showCard}>
+            <View onLayout={this.onLayout} style={{ width: (this.state.width - (paddingValue * 6)) / 2, elevation: 5, backgroundColor: '#FFF' }}>
                 <TouchableOpacity onPress={() => this.goToDetail(show.id, this.state.isInterested, 1)}>
-                    <ImageBackground source={{ uri: `${url}${show.banners[0]}` }} style={imageStyle}>
+                    <ImageBackground source={{ uri: `${url}${show.banners[0]}` }} style={{ width: (this.state.width - (paddingValue * 6)) / 2, height: (this.state.width - (paddingValue * 6)) / 2.6, borderRadius: 5, overflow: 'hidden' }}>
                         <View style={boderTime}>
                             <Text style={showDate}>{this.parseDate(show.time)[2]}</Text>
                             <Text style={showMonth}>{this.parseDate(show.time)[1]}</Text>
@@ -100,22 +109,11 @@ const styles = StyleSheet.create({
         elevation: 5,
         justifyContent: 'space-between'
     },
-    imageStyle: {
-        width: (width - (paddingValue * 6)) / 2,
-        height: (width - (paddingValue * 6)) / 2.6,
-        borderRadius: 5,
-        overflow: 'hidden',
-    },
     body: {
         flexDirection: 'row',
         justifyContent: 'space-around',
         flexWrap: 'wrap',
         padding: 3,
-    },
-    showCard: {
-        width: (width - (paddingValue * 6)) / 2,
-        elevation: 5,
-        backgroundColor: '#FFF'
     },
     boderTime: {
         borderWidth: 1,

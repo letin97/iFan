@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
     Dimensions, View, Text,
     StyleSheet, Image, ScrollView,
-    TouchableOpacity
+    TouchableOpacity, ActivityIndicator
 } from 'react-native';
 
 
@@ -31,27 +31,33 @@ const url = 'http://ifanapp.000webhostapp.com/ifan/banners/show/';
 
 export default class ShowDetail extends Component {
 
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
-            show: {},
+            show: null,
             singers: [],
             isInterested: '0',
             style: ''
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         const { navigation } = this.props;
         const id = navigation.getParam('id', 'NO-ID');
         const interested = navigation.getParam('interested', '0');
         const style = navigation.getParam('style', '0');
         this.setState({ isInterested: interested, style });
 
+        this._isMounted = true;
+
         getShowDetail(id)
             .then(responJSON => {
-                const { show } = responJSON;
-                this.setState({ show });
+                if (this._isMounted) {
+                    const { show } = responJSON;
+                    this.setState({ show });
+                }
             })
             .catch(err => console.log(err));
 
@@ -61,6 +67,10 @@ export default class ShowDetail extends Component {
                 this.setState({ singers });
             })
             .catch(err => console.log(err));
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     onSendShow() {
@@ -96,7 +106,13 @@ export default class ShowDetail extends Component {
 
     render() {
         const { show } = this.state;
-        if (Object.keys(show).length === 0) return null;
+        if (show === null) {
+            return (
+                <View style={{ flex: 1, justifyContent: 'center', backgroundColor: '#fff' }}>
+                    <ActivityIndicator size="large" color="#FF1F1F" />
+                </View>
+            );
+        }
 
         const { wapper, imageStyle, showCard, boderTime, showTime, showInfo, showFullDate, showPrice,
             showDate, showMonth, showName, showPlace, icStyle1, icStyle1Fill, icStyle2, boderPrice, icInfo, icInfoFill } = styles;
@@ -194,8 +210,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10
     },
     imageStyle: {
-        width,
-        height: width / 2,
+        height: 200,
     },
     showCard: {
         elevation: 5,

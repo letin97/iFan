@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, ListView, Animated, Image, StyleSheet } from 'react-native';
+import { Text, View, TouchableOpacity, ListView, Animated, Image, StyleSheet, ActivityIndicator } from 'react-native';
 
 import getSchedule from '../../api/getSchedule';
 
@@ -59,7 +59,7 @@ export default class Schedule extends Component {
     }
 
     parseDate(input) {
-        const parts = input.trim().replace(/ +(?= )/g,'').split(/[\s-\/:]/);
+        const parts = input.trim().replace(/ +(?= )/g, '').split(/[\s-\/:]/);
         return parts;
     }
 
@@ -102,8 +102,15 @@ export default class Schedule extends Component {
     }
 
     render() {
+        if (this.state.dataSource.length === 0) {
+            return (
+                <View style={{ flex: 1, justifyContent: 'center', backgroundColor: '#fff' }}>
+                    <ActivityIndicator size="large" color="#FF1F1F" />
+                </View>
+            );
+        }
         return (
-            <View style={styles.container}>
+            <View style={styles.container} >
                 <ListView
                     enableEmptySections
                     style={styles.list}
@@ -112,7 +119,7 @@ export default class Schedule extends Component {
                     renderSectionHeader={this.renderSectionHeader.bind(this)}
                     stickySectionHeadersEnabled
                     automaticallyAdjustContentInsets={false}
-                    removeClippedSubviews={false} 
+                    removeClippedSubviews={false}
                 />
             </View>
         );

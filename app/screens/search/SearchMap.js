@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import {
     Text, View, StyleSheet, ImageBackground,
-    TouchableOpacity, Dimensions
+    TouchableOpacity, Dimensions, ActivityIndicator
 } from 'react-native';
 
 import getUserShow from '../../api/getUserShow';
@@ -15,30 +15,38 @@ const width = Dimensions.get('window').width;
 
 export default class SearchMap extends Component {
 
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
             isShowPlace: false,
             showChosen: {},
-            userShow: [],
-            loading: true,
+            userShow: null
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         const shows = this.props.navigation.getParam('shows', 'NO-SHOWS');
         this.setState({ isShowPlace: true, showChosen: shows[0] });
+
+        this._isMounted = true;
 
         getToken()
             .then(token => getUserShow(token))
             .then(responJSON => {
-                if (responJSON !== null) this.setState({ userShow: responJSON }, () => this.setState({ loading: false }));
-                else this.setState(({ loading: false }));
+                if (this._isMounted) {
+                    if (responJSON !== null) this.setState({ userShow: responJSON });
+                    else this.setState({ userShow: [] });
+                }
             })
             .catch(err => {
                 console.log(err);
-                this.setState({ loading: false });
             });
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     goToDetail(id) {
@@ -92,7 +100,12 @@ export default class SearchMap extends Component {
                             </Marker>
                         ))}
 
-                    </MapView> : null}
+                    </MapView>
+                    :
+                    <View style={{ flex: 1, justifyContent: 'center', backgroundColor: '#fff' }}>
+                        <ActivityIndicator size="large" color="#FF1F1F" />
+                    </View>
+                }
 
                 {this.state.isShowPlace ?
                     <View style={styles.overlay}>
@@ -101,7 +114,7 @@ export default class SearchMap extends Component {
                                 <Text style={styles.close}>Đóng</Text>
                             </TouchableOpacity>
                         </View>
-                        {this.state.loading === false ?
+                        {this.state.userShow !== null ?
                             <TouchableOpacity onPress={() => this.goToDetail(this.state.showChosen.id)}>
                                 <ShowCard userShow={this.state.userShow} navigation={this.props.navigation} show={this.state.showChosen} single={1} />
                             </TouchableOpacity>

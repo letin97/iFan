@@ -25,15 +25,6 @@ export default class Authentication extends Component {
         };
     }
 
-    // componentWillMount() {
-    //     getToken()
-    //         .then(token => checkLogin(token))
-    //         .then(res => {
-    //             this.props.navigation.replace('Home');
-    //         })
-    //         .catch(err => console.log('ERROR LOGIN', err));
-    // }
-
     signIn() {
         this.setState({ isSignIn: true });
     }

@@ -14,24 +14,34 @@ const width = Dimensions.get('window').width;
 
 export default class GridShow extends Component {
 
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
             userShow: this.props.userShow,
-            loading: false,
         };
         global.refreshGrid = this.refreshGrid.bind(this);
     }
 
     refreshGrid() {
-        this.setState({ loading: true });
-        
-        getToken()
+        this._isMounted = true;
+
+        this.setState({ userShow: null }, () => {
+            getToken()
             .then(token => getUserShow(token))
             .then(responJSON => {
-                this.setState({ userShow: responJSON }, () => this.setState({ loading: false }));
+                if (this._isMounted) {
+                    if (responJSON !== null) this.setState({ userShow: responJSON });
+                    else this.setState({ userShow: [] });
+                }
             })
             .catch(err => console.log(err));
+        });  
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render() {
@@ -40,7 +50,7 @@ export default class GridShow extends Component {
         const { wapper, body } = styles;
         return (
             <View style={wapper}>
-                {this.state.loading === false ?
+                {this.state.userShow !== null ?
                     <ListView
                         enableEmptySections
                         contentContainerStyle={body}

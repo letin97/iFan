@@ -27,7 +27,10 @@ export default class App extends Component {
         else this.setState({ signedIn: true });
         this.setState({ checkedSignIn: true });
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+          console.log(err);
+          this.setState({ checkedSignIn: true });
+      });
   }
 
   render() {

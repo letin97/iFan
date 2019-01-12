@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, ActivityIndicator } from 'react-native';
 
 import GridShow from './GridShow';
 import TopShow from './TopShow';
@@ -10,17 +10,20 @@ import getToken from '../../api/getToken';
 
 export default class Home extends Component {
 
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
-            loading: true,
             topshow: {},
             shows: [],
-            userShow: []
+            userShow: null
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
+        this._isMounted = true;
+
         initData()
             .then(responJSON => {
                 const { topshow, shows } = responJSON;
@@ -30,24 +33,33 @@ export default class Home extends Component {
         getToken()
             .then(token => getUserShow(token))
             .then(responJSON => {
-                if (responJSON !== null) this.setState({ userShow: responJSON }, () => this.setState({ loading: false }));
-                else this.setState(({ loading: false }));
+                if (this._isMounted) {
+                    if (responJSON !== null) this.setState({ userShow: responJSON });
+                    else this.setState({ userShow: [] });
+                }
             })
             .catch(err => {
                 console.log(err);
-                //this.setState({ loading: false });
-            });  
+            });
     }
-    
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     render() {
         return (
             <View style={{ flex: 1 }}>
-                {this.state.loading === false ?
+                {this.state.userShow !== null ?
                     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
                         <TopShow navigation={this.props.navigation} topshow={this.state.topshow} userShow={this.state.userShow} />
                         <GridShow navigation={this.props.navigation} shows={this.state.shows} userShow={this.state.userShow} />
                     </ScrollView>
-                    : null}
+                    :
+                    <View style={{ flex: 1, justifyContent: 'center', backgroundColor: '#fff' }}>
+                        <ActivityIndicator size="large" color="#FF1F1F" />
+                    </View>
+                }
             </View>
         );
     }
